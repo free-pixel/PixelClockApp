@@ -36,3 +36,8 @@ PixelClock 是一款番茄钟应用，旨在帮助你提高工作效率。你可
   <img src="https://github.com/user-attachments/assets/0abbb3f0-ad56-4d94-89dc-71f973921e27" width="auto" height="400px"/>
 
   完成工作后，系统将自动进入长休息模式，确保你有充分的恢复时间。
+
+**WARNNING**
+
+我正在 Mac OS 15.4.1 版本的系统上进行应用程序的构建。若该应用无法正常运行，你可以通过克隆代码库的方式，自行进行编译操作。
+
