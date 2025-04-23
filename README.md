@@ -1,4 +1,7 @@
-**PixelClock - Pomodoro Timer for Mac**
+# PixelClock - Pomodoro Timer for Mac
+
+English | [简体中文](README-CN.md)
+
 
 PixelClock is a Pomodoro timer app designed to help you boost productivity. You can customize your Pomodoro timer with work durations, task details, break times, and long break times.
 
