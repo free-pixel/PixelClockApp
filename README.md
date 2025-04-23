@@ -15,9 +15,9 @@ After completing 4 Pomodoros, PixelClock will automatically trigger a long break
 **Feature Overview**
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/25a14b53-dd4b-4c14-930a-44057b851b0e" width="20%" style="display:inline-block; margin-right:1%;" />
-  <img src="https://github.com/user-attachments/assets/a839c67e-c735-4f06-b87a-7d231acbf215" width="20%" style="display:inline-block; margin-right:1%;" />
-  <img src="https://github.com/user-attachments/assets/0abbb3f0-ad56-4d94-89dc-71f973921e27" width="20%" style="display:inline-block;" />
+  <img src="https://github.com/user-attachments/assets/25a14b53-dd4b-4c14-930a-44057b851b0e" width="30%" style="display:inline-block; margin-right:1%;" />
+  <img src="https://github.com/user-attachments/assets/a839c67e-c735-4f06-b87a-7d231acbf215" width="30%" style="display:inline-block; margin-right:1%;" />
+  <img src="https://github.com/user-attachments/assets/0abbb3f0-ad56-4d94-89dc-71f973921e27" width="30%" style="display:inline-block;" />
 </p>
 
 
