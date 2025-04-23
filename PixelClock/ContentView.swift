@@ -11,7 +11,14 @@ struct ContentView: View {
     @State private var timer: Timer? = nil
     @State private var currentState = "Task" // "Task", "Break", "Long Break"
     @State private var completedTasks: Int = 0 // 跟踪完成的任务数
-    @State private var volume: Double = 0.5
+    @State private var volume: Double = 0.5 {
+        didSet {
+            // 如果当前正在播放声音，实时更新音量
+            if let player = Self.player {
+                player.volume = Float(volume)
+            }
+        }
+    }
     @State private var soundEnabled = true
     @State private var soundTimer: Timer? = nil
     private static var player: NSSound?
@@ -97,7 +104,7 @@ struct ContentView: View {
                 }
                 .padding()
 
-                Text("Volume")
+                Text("Volume: \(Int(volume * 100))%")  // 添加音量百分比显示
                 Slider(value: $volume, in: 0...1, step: 0.01)
                     .padding()
             }
@@ -175,13 +182,15 @@ struct ContentView: View {
             // 尝试加载自定义声音
             if let soundURL = Bundle.main.url(forResource: "alert", withExtension: "wav"),
                let sound = NSSound(contentsOf: soundURL, byReference: true) {
-                sound.volume = Float(volume)
+                sound.volume = Float(volume)  // 使用当前音量设置
                 Self.player = sound
                 Self.player?.play()
                 
                 // 创建重复播放的计时器
                 soundTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
-                    Self.player?.play()
+                    Self.player?.stop()  // 先停止当前播放
+                    Self.player?.volume = Float(volume)  // 更新音量
+                    Self.player?.play()  // 重新播放
                 }
                 
                 // 确保计时器在主运行循环中运行
@@ -198,7 +207,12 @@ struct ContentView: View {
     private func fallbackBeep() {
         NSSound.beep()
         soundTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
-            NSSound.beep()
+            if let systemSound = NSSound(named: NSSound.Name("Tink")) {
+                systemSound.volume = Float(volume)  // 设置系统声音的音量
+                systemSound.play()
+            } else {
+                NSSound.beep()
+            }
         }
         if let timer = soundTimer {
             RunLoop.main.add(timer, forMode: .common)
