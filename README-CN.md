@@ -44,3 +44,12 @@ PixelClock 是一款番茄钟应用，旨在帮助你提高工作效率。你可
 
 我正在 Mac OS 15.4.1 版本的系统上进行应用程序的构建。若该应用无法正常运行，你可以通过克隆代码库的方式，自行进行编译操作。
 
+
+
+**功能总览：**
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/25a14b53-dd4b-4c14-930a-44057b851b0e" width="20%" style="display:inline-block; margin-right:1%;" />
+  <img src="https://github.com/user-attachments/assets/a839c67e-c735-4f06-b87a-7d231acbf215" width="20%" style="display:inline-block; margin-right:1%;" />
+  <img src="https://github.com/user-attachments/assets/0abbb3f0-ad56-4d94-89dc-71f973921e27" width="20%" style="display:inline-block;" />
+</p>
