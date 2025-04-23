@@ -24,7 +24,7 @@ After completing 4 Pomodoros, PixelClock will automatically trigger a long break
 
 - **Progress Bar Interface:**
 
-  <img src="https://github.com/user-attachments/assets/7b283f20-4e1a-4f61-9720-f7d525b1f7ac" width="800px" height="auto"/>
+  <img src="https://github.com/user-attachments/assets/7b283f20-4e1a-4f61-9720-f7d525b1f7ac" width="640px" height="auto"/>
 
   A real-time red progress bar displayed in the menu bar, making it easy to track your work progress.
 
@@ -34,3 +34,8 @@ After completing 4 Pomodoros, PixelClock will automatically trigger a long break
   <img src="https://github.com/user-attachments/assets/0abbb3f0-ad56-4d94-89dc-71f973921e27" width="auto" height="400px"/>
 
   After completing work, the app will automatically switch to long break mode to ensure you have enough recovery time.
+
+**WARNNING**
+
+I'm currently building an application on the Mac OS version 15.4.1 . If the application fails to run properly, you can 
+clone the code repository and perform the compilation operation on your own.
