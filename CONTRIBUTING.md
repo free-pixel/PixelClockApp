@@ -78,7 +78,7 @@ When filing an issue, make sure to answer these questions:
 
 ## Documentation
 
-- Keep README.md and README-CN.md in sync
+- Keep README.md and README-ZH_CN.md in sync
 - Update documentation for any user-facing changes
 - Add comments for complex code sections
 
