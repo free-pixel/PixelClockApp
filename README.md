@@ -20,7 +20,7 @@ After completing 4 Pomodoros, PixelClock will automatically trigger a long break
   An intuitive task management and time setting interface.
 
 - **Progress Bar Interface:**  
-  <img src="https://github.com/user-attachments/assets/7b283f20-4e1a-4f61-9720-f7d525b1f7ac" width="200px" height="auto"/>
+  <img src="https://github.com/user-attachments/assets/7b283f20-4e1a-4f61-9720-f7d525b1f7ac" width="300px" height="auto"/>
   A real-time red progress bar displayed in the menu bar, making it easy to track your work progress.
 
 - **Long Break Interface:**  
