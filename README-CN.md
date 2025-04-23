@@ -22,7 +22,7 @@ PixelClock 是一款番茄钟应用，旨在帮助你提高工作效率。你可
   直观的任务管理与时间设置界面。
 
 - **进度条界面：**  
-  <img src="https://github.com/user-attachments/assets/7b283f20-4e1a-4f61-9720-f7d525b1f7ac" width="200px" height="auto"/>
+  <img src="https://github.com/user-attachments/assets/7b283f20-4e1a-4f61-9720-f7d525b1f7ac" width="300px" height="auto"/>
   菜单栏中实时显示的红色进度条，帮助你轻松跟踪工作进度。
 
 - **长休息界面：**  
