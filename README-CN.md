@@ -1,7 +1,7 @@
 
 # PixelClock - Mac版番茄钟应用
 
-[English](README.md) | 简体中文
+[English](README.md) | 简体中文 | [繁體中文](README-HANS.md)
 
 PixelClock 是一款番茄钟应用，旨在帮助你提高工作效率。你可以为番茄钟设置自定义的工作时长、任务
 内容、休息时长及长休息时长。
