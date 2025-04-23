@@ -15,16 +15,24 @@ PixelClock 是一款番茄钟应用，旨在帮助你提高工作效率。你可
 圈，实时反映你的工作进度。
 - **长休息提醒**：完成 4 个番茄钟后，自动启动长休息，帮助你保持高效的工作节奏。
 
+
+
 **界面展示：**
 
 - **基本界面：**  
+
   <img src="https://github.com/user-attachments/assets/a839c67e-c735-4f06-b87a-7d231acbf215" width="auto" height="400px"/>
+
   直观的任务管理与时间设置界面。
 
 - **进度条界面：**  
+
   <img src="https://github.com/user-attachments/assets/7b283f20-4e1a-4f61-9720-f7d525b1f7ac" width="300px" height="auto"/>
+
   菜单栏中实时显示的红色进度条，帮助你轻松跟踪工作进度。
 
 - **长休息界面：**  
+
   <img src="https://github.com/user-attachments/assets/0abbb3f0-ad56-4d94-89dc-71f973921e27" width="auto" height="400px"/>
+
   完成工作后，系统将自动进入长休息模式，确保你有充分的恢复时间。
