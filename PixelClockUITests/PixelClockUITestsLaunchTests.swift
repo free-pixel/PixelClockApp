@@ -2,7 +2,7 @@
 //  PixelClockUITestsLaunchTests.swift
 //  PixelClockUITests
 //
-//  Created by 何垒 on 2025/4/23.
+//  Created by FreePixelGames on 2025/4/23.
 //
 
 import XCTest
