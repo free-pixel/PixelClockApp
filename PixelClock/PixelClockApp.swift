@@ -20,7 +20,7 @@ struct PixelClockApp: App {
                 .environmentObject(appDelegate)
                 .background(VisualEffectView())
         }
-        // 移除 .windowStyle(.hiddenTitleBar)
+        // Remove .windowStyle(.hiddenTitleBar)
         .defaultSize(width: 300, height: 720)
         .windowResizability(.contentSize)
         .commands {
@@ -138,9 +138,9 @@ class MenuBarController: NSObject {
     }
     
     func updateProgress(totalTime: Double, remainingTime: Double) {
-        // 计算进度值
+        // Calculate progress value
         currentProgress = 1.0 - (remainingTime / totalTime)
-        // 立即重绘
+        // Redraw immediately
         drawProgress()
     }
     
@@ -209,10 +209,15 @@ class MenuBarController: NSObject {
             NSApp.activate(ignoringOtherApps: true)
             
             if existingWindow.isMiniaturized {
+                // 只调用恢复，不再调用 makeKeyAndOrderFront
                 existingWindow.deminiaturize(nil)
+            } else if !existingWindow.isVisible {
+                // 如果窗口不可见才需要调用
+                existingWindow.makeKeyAndOrderFront(nil)
+            } else {
+                // 窗口已显示，只前置 App
+                existingWindow.orderFrontRegardless()
             }
-            
-            existingWindow.makeKeyAndOrderFront(nil)
             return
         }
         
@@ -222,8 +227,16 @@ class MenuBarController: NSObject {
         }
         
         NSApp.activate(ignoringOtherApps: true)
-        window.makeKeyAndOrderFront(nil)
+
+        if window.isMiniaturized {
+            window.deminiaturize(nil)
+        } else if !window.isVisible {
+            window.makeKeyAndOrderFront(nil)
+        } else {
+            window.orderFrontRegardless()
+        }
     }
+
     
     @objc func quit() {
         NSApplication.shared.terminate(nil)
