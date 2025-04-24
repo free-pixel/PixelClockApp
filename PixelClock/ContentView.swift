@@ -3,10 +3,10 @@ import AppKit
 import AVFoundation
 
 struct ContentView: View {
-    @State private var timerValue: Double = 25 * 60 // 25 minutes in seconds
-    @State private var taskDuration: Double = 25 // minutes
-    @State private var breakDuration: Double = 5 // minutes
-    @State private var longBreakDuration: Double = 15 // minutes
+    @State private var timerValue: Double = 25 * 60 // 25分钟转换为秒
+    @State private var taskDuration: Double = 25 // 分钟
+    @State private var breakDuration: Double = 5 // 分钟
+    @State private var longBreakDuration: Double = 15 // 分钟
     @State private var timerRunning = false
     @State private var timer: Timer? = nil
     @State private var currentState = "Task" // "Task", "Break", "Long Break"
@@ -26,7 +26,7 @@ struct ContentView: View {
 
     var body: some View {
         VStack {
-            Text("番茄计时器")
+            Text("Pomodoro Timer")
                 .font(.largeTitle)
                 .padding()
 
@@ -35,7 +35,8 @@ struct ContentView: View {
                 .foregroundColor(currentState == "Task" ? .green : currentState == "Break" ? .blue : .orange)
                 .padding()
 
-            Text("\(Int(timerValue) / 60) : \(String(format: "%02d", Int(timerValue) % 60))")
+            // 显示格式改为分:秒
+            Text("\(Int(timerValue) / 60):\(String(format: "%02d", Int(timerValue) % 60))")
                 .font(.system(size: 40))
                 .padding()
 
@@ -68,32 +69,41 @@ struct ContentView: View {
 
             VStack {
                 Text("Task Duration: \(Int(taskDuration)) min")
-                Slider(value: $taskDuration, in: 1...60, step: 1)  // 将最小值从 5 改为 1
+                Slider(value: $taskDuration, in: 1...60, step: 1)
                     .padding()
-                    .disabled(timerRunning) // 添加禁用状态
-                    .onChange(of: taskDuration) { newValue in
+                    .disabled(timerRunning)
+                    .focusable(false)
+                    .onChange(of: taskDuration) { oldValue, newValue in // 使用新的onChange语法
                         if currentState == "Task" && !timerRunning {
-                            timerValue = newValue * 60
+                            DispatchQueue.main.async {
+                                timerValue = newValue * 60
+                            }
                         }
                     }
 
                 Text("Break Duration: \(Int(breakDuration)) min")
                 Slider(value: $breakDuration, in: 1...30, step: 1)
                     .padding()
-                    .disabled(timerRunning) // 添加禁用状态
-                    .onChange(of: breakDuration) { newValue in
+                    .disabled(timerRunning)
+                    .focusable(false)
+                    .onChange(of: breakDuration) { oldValue, newValue in
                         if currentState == "Break" && !timerRunning {
-                            timerValue = newValue * 60
+                            DispatchQueue.main.async {
+                                timerValue = newValue * 60
+                            }
                         }
                     }
 
                 Text("Long Break Duration: \(Int(longBreakDuration)) min")
                 Slider(value: $longBreakDuration, in: 5...30, step: 1)
                     .padding()
-                    .disabled(timerRunning) // 添加禁用状态
-                    .onChange(of: longBreakDuration) { newValue in
+                    .disabled(timerRunning)
+                    .focusable(false)
+                    .onChange(of: longBreakDuration) { oldValue, newValue in
                         if currentState == "Long Break" && !timerRunning {
-                            timerValue = newValue * 60
+                            DispatchQueue.main.async {
+                                timerValue = newValue * 60
+                            }
                         }
                     }
             }
@@ -149,7 +159,7 @@ struct ContentView: View {
         timerRunning = false
         completedTasks = 0
         currentState = "Task"
-        timerValue = taskDuration * 60
+        timerValue = taskDuration * 60  // 转换为秒
         
         updateMenuBarProgress(totalTime: 1, remainingTime: 1)
     }
@@ -159,18 +169,18 @@ struct ContentView: View {
             completedTasks += 1
             if completedTasks >= 4 {
                 currentState = "Long Break"
-                timerValue = longBreakDuration * 60
+                timerValue = longBreakDuration * 60  // 转换为秒
                 completedTasks = 0
             } else {
                 currentState = "Break"
-                timerValue = breakDuration * 60
+                timerValue = breakDuration * 60  // 转换为秒
             }
         } else if currentState == "Break" {
             currentState = "Task"
-            timerValue = taskDuration * 60
+            timerValue = taskDuration * 60  // 转换为秒
         } else {
             currentState = "Task"
-            timerValue = taskDuration * 60
+            timerValue = taskDuration * 60  // 转换为秒
         }
         timerRunning = false
     }
