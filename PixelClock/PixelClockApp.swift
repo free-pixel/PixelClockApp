@@ -27,62 +27,101 @@ struct PixelClockApp: App {
 // 负责处理菜单栏初始化的 AppDelegate
 class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     @Published var menuBarController: MenuBarController?
+    // 将 mainWindow 改为 internal 访问级别
+    var mainWindow: NSWindow?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         print("AppDelegate: Initializing")
         
         // 确保主窗口已创建
         DispatchQueue.main.async {
-            self.menuBarController = MenuBarController()
+            self.setupMainWindow()
+            self.menuBarController = MenuBarController(appDelegate: self)
             print("MenuBarController initialized")
             
-            // 配置主窗口
-            if let window = NSApplication.shared.windows.first {
-                print("Configuring main window")
-                window.styleMask.remove(.resizable)
-                window.setContentSize(NSSize(width: 300, height: 720))
-                window.center()
-                
-                // 初始时隐藏窗口
-                window.orderOut(nil)
-            } else {
-                print("Warning: Main window not found during initialization")
-            }
+            // 初始时隐藏窗口
+            self.mainWindow?.orderOut(nil)
+        }
+    }
+
+    private func setupMainWindow() {
+        // 创建窗口
+        mainWindow = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 300, height: 720),
+            styleMask: [.titled, .closable, .miniaturizable],
+            backing: .buffered,
+            defer: false
+        )
+        
+        if let window = mainWindow {
+            // 设置窗口标题和基本属性
+            window.title = "PixelClock"
+            window.isReleasedWhenClosed = false
+            window.canHide = true
+            
+            // 创建内容视图
+            let contentView = ContentView()
+                .environmentObject(self)
+            
+            // 设置内容视图
+            window.contentView = NSHostingView(rootView: contentView)
+            
+            // 配置窗口属性
+            window.styleMask.remove(.resizable)
+            window.center()
+            window.delegate = self
         }
     }
 }
 
-class MenuBarController: NSObject { // 继承 NSObject 以支持 selector
-    private(set) var statusItem: NSStatusItem
-    private var currentProgress: Double = 0
-    private var rightClickMenu: NSMenu // 存储右键菜单
+// 修改窗口代理方法
+extension AppDelegate: NSWindowDelegate {
+    func windowWillClose(_ notification: Notification) {
+        if let window = notification.object as? NSWindow {
+            window.miniaturize(nil)
+        }
+    }
     
-    override init() {
+    func windowDidMiniaturize(_ notification: Notification) {
+        if let window = notification.object as? NSWindow {
+            window.setIsVisible(false)
+        }
+    }
+    
+    func windowDidDeminiaturize(_ notification: Notification) {
+        if let window = notification.object as? NSWindow {
+            window.makeKeyAndOrderFront(nil)
+        }
+    }
+}
+
+class MenuBarController: NSObject {
+    private var statusItem: NSStatusItem
+    private var currentProgress: Double = 0
+    private var rightClickMenu: NSMenu
+    private weak var appDelegate: AppDelegate?
+    
+    init(appDelegate: AppDelegate) {
+        self.appDelegate = appDelegate
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
-        
-        // 创建右键菜单
         rightClickMenu = NSMenu()
+        
+        super.init()
+        
+        // 配置右键菜单
         rightClickMenu.addItem(NSMenuItem(title: "Show", action: #selector(showMainWindow), keyEquivalent: "s"))
         rightClickMenu.addItem(NSMenuItem.separator())
         rightClickMenu.addItem(NSMenuItem(title: "Quit", action: #selector(quit), keyEquivalent: "q"))
         
-        super.init()
-        
         // 配置状态栏按钮
         if let button = statusItem.button {
-            // 设置初始图标
-            drawProgress()
-            
-            // 设置按钮事件监听
             button.target = self
             button.action = #selector(handleButtonClick(_:))
-            
-            // 确保按钮可以接收鼠标事件
             button.sendAction(on: [.leftMouseUp, .rightMouseUp])
-            
-            // 移除默认菜单
-            statusItem.menu = nil
         }
+        
+        // 初始化时绘制进度为0的图标
+        drawProgress()
     }
     
     func updateProgress(totalTime: Double, remainingTime: Double) {
@@ -145,38 +184,35 @@ class MenuBarController: NSObject { // 继承 NSObject 以支持 selector
         print("Button clicked with event type: \(event.type.rawValue)")
         
         if event.type == .rightMouseUp {
-            statusItem.button?.performClick(nil) // 触发右键菜单
-            rightClickMenu.popUp(positioning: nil, at: NSPoint(x: 0, y: 0), in: statusItem.button!)
+            // 直接显示右键菜单，不需要额外的 performClick
+            statusItem.menu = rightClickMenu
+            statusItem.button?.performClick(nil)
+            statusItem.menu = nil  // 菜单显示后清除引用，这样左键点击仍然可以正常工作
         } else {
             showMainWindow()
         }
     }
     
     @objc func showMainWindow() {
-        print("Attempting to show main window")
-        
         // 激活应用程序
         NSApp.activate(ignoringOtherApps: true)
         
-        // 查找并显示主窗口
-        if let window = NSApplication.shared.windows.first {
-            print("Window found, showing it")
-            window.makeKeyAndOrderFront(nil)
-            window.orderFrontRegardless()
-            
-            // 确保窗口在屏幕上可见
-            if let screen = NSScreen.main {
-                let centerPoint = NSPoint(
-                    x: screen.frame.midX - window.frame.width / 2,
-                    y: screen.frame.midY - window.frame.height / 2
-                )
-                window.setFrameOrigin(centerPoint)
+        if let window = appDelegate?.mainWindow {
+            if window.isMiniaturized {
+                window.deminiaturize(nil)
             }
             
-            // 强制窗口成为关键窗口
-            window.makeKey()
+            // 确保窗口可见并居中
+            window.setIsVisible(true)
+            window.center()
+            
+            // 将窗口带到前台
+            window.orderFrontRegardless()
+            
+            // 强制激活窗口
+            NSApp.activate(ignoringOtherApps: true)
         } else {
-            print("No window found!")
+            print("Warning: Main window not found!")
         }
     }
     
