@@ -1,3 +1,10 @@
+//
+//  ContentView.swift
+//  PixelClock
+//
+//  Created by FreePixelGames on 2025/4/24.
+//
+
 import SwiftUI
 import AppKit
 import AVFoundation
@@ -120,6 +127,7 @@ struct ContentView: View {
             }
         }
         .padding()
+        .background(WindowAccessor())
     }
 
     func startPauseTimer() {
