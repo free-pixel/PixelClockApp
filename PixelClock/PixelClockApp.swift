@@ -17,80 +17,96 @@ struct PixelClockApp: App {
             ContentView()
                 .frame(width: 300, height: 720)
                 .fixedSize()
-                .environmentObject(appDelegate) // 添加这行，将 AppDelegate 注入到环境中
+                .environmentObject(appDelegate)
+                .background(VisualEffectView())
         }
-        .windowResizability(.contentSize)
+        // 移除 .windowStyle(.hiddenTitleBar)
         .defaultSize(width: 300, height: 720)
+        .windowResizability(.contentSize)
+        .commands {
+            CommandGroup(replacing: .windowSize) { }
+            CommandGroup(replacing: .windowList) { }
+            CommandGroup(replacing: .systemServices) {
+                Button("Minimize") {
+                    if let window = NSApplication.shared.windows.first {
+                        window.miniaturize(nil)
+                    }
+                }
+                .keyboardShortcut("w", modifiers: .command)
+            }
+        }
+    }
+}
+
+// 创建自定义窗口类来禁用关闭按钮
+class NonClosableWindow: NSWindow {
+    // 重写performClose方法，使其什么也不做
+    override func performClose(_ sender: Any?) {
+        // 不执行任何操作，这样点击关闭按钮不会有任何效果
     }
 }
 
 // 负责处理菜单栏初始化的 AppDelegate
 class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     @Published var menuBarController: MenuBarController?
-    // 将 mainWindow 改为 internal 访问级别
     var mainWindow: NSWindow?
-
+    private var windowDelegate: WindowDelegate?
+    
     func applicationDidFinishLaunching(_ notification: Notification) {
         print("AppDelegate: Initializing")
         
-        // 确保主窗口已创建
         DispatchQueue.main.async {
             self.setupMainWindow()
             self.menuBarController = MenuBarController(appDelegate: self)
             print("MenuBarController initialized")
-            
-            // 初始时隐藏窗口
             self.mainWindow?.orderOut(nil)
         }
     }
 
     private func setupMainWindow() {
-        // 创建窗口
-        mainWindow = NSWindow(
+        // 使用我们的自定义窗口类
+        mainWindow = NonClosableWindow(
             contentRect: NSRect(x: 0, y: 0, width: 300, height: 720),
-            styleMask: [.titled, .closable, .miniaturizable],
+            styleMask: [.titled, .miniaturizable, .closable],
             backing: .buffered,
             defer: false
         )
         
         if let window = mainWindow {
-            // 设置窗口标题和基本属性
+            // 禁用关闭按钮，使其显示为灰色
+            window.standardWindowButton(.closeButton)?.isEnabled = false
+            
             window.title = "PixelClock"
             window.isReleasedWhenClosed = false
             window.canHide = true
             
-            // 创建内容视图
             let contentView = ContentView()
                 .environmentObject(self)
             
-            // 设置内容视图
             window.contentView = NSHostingView(rootView: contentView)
-            
-            // 配置窗口属性
-            window.styleMask.remove(.resizable)
             window.center()
-            window.delegate = self
+            
+            windowDelegate = WindowDelegate()
+            window.delegate = windowDelegate
         }
+    }
+    
+    // 添加一个空方法，用于关闭按钮的动作
+    @objc private func doNothing() {
+        // 什么也不做
     }
 }
 
-// 修改窗口代理方法
-extension AppDelegate: NSWindowDelegate {
+// 窗口代理类确保窗口不能被关闭
+class WindowDelegate: NSObject, NSWindowDelegate {
+    func windowShouldClose(_ sender: NSWindow) -> Bool {
+        return false // 永远不允许窗口关闭
+    }
+    
     func windowWillClose(_ notification: Notification) {
+        // 如果somehow窗口要关闭，改为最小化
         if let window = notification.object as? NSWindow {
             window.miniaturize(nil)
-        }
-    }
-    
-    func windowDidMiniaturize(_ notification: Notification) {
-        if let window = notification.object as? NSWindow {
-            window.setIsVisible(false)
-        }
-    }
-    
-    func windowDidDeminiaturize(_ notification: Notification) {
-        if let window = notification.object as? NSWindow {
-            window.makeKeyAndOrderFront(nil)
         }
     }
 }
@@ -108,19 +124,16 @@ class MenuBarController: NSObject {
         
         super.init()
         
-        // 配置右键菜单
         rightClickMenu.addItem(NSMenuItem(title: "Show", action: #selector(showMainWindow), keyEquivalent: "s"))
         rightClickMenu.addItem(NSMenuItem.separator())
         rightClickMenu.addItem(NSMenuItem(title: "Quit", action: #selector(quit), keyEquivalent: "q"))
         
-        // 配置状态栏按钮
         if let button = statusItem.button {
             button.target = self
             button.action = #selector(handleButtonClick(_:))
             button.sendAction(on: [.leftMouseUp, .rightMouseUp])
         }
         
-        // 初始化时绘制进度为0的图标
         drawProgress()
     }
     
@@ -181,39 +194,35 @@ class MenuBarController: NSObject {
     
     @objc private func handleButtonClick(_ sender: Any?) {
         guard let event = NSApp.currentEvent else { return }
-        print("Button clicked with event type: \(event.type.rawValue)")
         
         if event.type == .rightMouseUp {
-            // 直接显示右键菜单，不需要额外的 performClick
             statusItem.menu = rightClickMenu
             statusItem.button?.performClick(nil)
-            statusItem.menu = nil  // 菜单显示后清除引用，这样左键点击仍然可以正常工作
+            statusItem.menu = nil
         } else {
             showMainWindow()
         }
     }
     
     @objc func showMainWindow() {
-        // 激活应用程序
-        NSApp.activate(ignoringOtherApps: true)
-        
-        if let window = appDelegate?.mainWindow {
-            if window.isMiniaturized {
-                window.deminiaturize(nil)
+        if let existingWindow = NSApplication.shared.windows.first {
+            NSApp.activate(ignoringOtherApps: true)
+            
+            if existingWindow.isMiniaturized {
+                existingWindow.deminiaturize(nil)
             }
             
-            // 确保窗口可见并居中
-            window.setIsVisible(true)
-            window.center()
-            
-            // 将窗口带到前台
-            window.orderFrontRegardless()
-            
-            // 强制激活窗口
-            NSApp.activate(ignoringOtherApps: true)
-        } else {
-            print("Warning: Main window not found!")
+            existingWindow.makeKeyAndOrderFront(nil)
+            return
         }
+        
+        guard let window = appDelegate?.mainWindow else {
+            print("Warning: Main window not found!")
+            return
+        }
+        
+        NSApp.activate(ignoringOtherApps: true)
+        window.makeKeyAndOrderFront(nil)
     }
     
     @objc func quit() {
@@ -251,4 +260,17 @@ struct SettingsView: View {
         }
         .padding()
     }
+}
+
+// 添加毛玻璃效果背景
+struct VisualEffectView: NSViewRepresentable {
+    func makeNSView(context: Context) -> NSVisualEffectView {
+        let view = NSVisualEffectView()
+        view.blendingMode = .behindWindow
+        view.state = .active
+        view.material = .windowBackground
+        return view
+    }
+    
+    func updateNSView(_ nsView: NSVisualEffectView, context: Context) {}
 }

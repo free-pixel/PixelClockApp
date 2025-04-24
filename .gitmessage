@@ -1,0 +1,23 @@
+# <type>: <subject>
+# |<----  Using a maximum of 50 characters  ---->|
+
+# Body: Explain what and why (not how)
+# |<----   Try to limit each line to a maximum of 72 characters   ---->|
+
+# --- COMMIT END ---
+# Type can be
+#    feat     (new feature)
+#    fix      (bug fix)
+#    refactor (refactoring production code)
+#    style    (formatting, missing semi colons, etc; no code change)
+#    docs     (changes to documentation)
+#    test     (adding or refactoring tests; no production code change)
+#    chore    (updating grunt tasks etc; no production code change)
+# --------------------
+# Remember to:
+#   - Use the present tense ("Add feature" not "Added feature")
+#   - Use the imperative mood ("Move cursor to..." not "Moves cursor to...")
+#   - Limit the first line to 72 characters or less
+#   - Reference issues and pull requests after the first line
+#   - Add a blank line between title and body
+# --------------------
