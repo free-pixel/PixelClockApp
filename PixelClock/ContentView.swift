@@ -29,7 +29,7 @@ struct ContentView: View {
     @State private var soundEnabled = true
     @State private var soundTimer: Timer? = nil
     private static var player: NSSound?
-    @EnvironmentObject var appDelegate: AppDelegate // 添加这行
+    @EnvironmentObject var appDelegate: AppDelegate // Add this line
 
     var body: some View {
         VStack {
@@ -42,12 +42,12 @@ struct ContentView: View {
                 .foregroundColor(currentState == "Task" ? .green : currentState == "Break" ? .blue : .orange)
                 .padding()
 
-            // 显示格式改为分:秒
+            // Display format changed to minutes:seconds
             Text("\(Int(timerValue) / 60):\(String(format: "%02d", Int(timerValue) % 60))")
                 .font(.system(size: 40))
                 .padding()
 
-            // 添加完成任务计数显示
+            // Add completed tasks counter display
             Text("Completed Tasks: \(completedTasks)")
                 .font(.subheadline)
                 .foregroundColor(.gray)
@@ -161,13 +161,13 @@ struct ContentView: View {
     }
 
     func stopTimer() {
-        stopSound() // 确保停止声音
+        stopSound() // Make sure to stop the sound
         timer?.invalidate()
         timer = nil
         timerRunning = false
         completedTasks = 0
         currentState = "Task"
-        timerValue = taskDuration * 60  // 转换为秒
+        timerValue = taskDuration * 60  // Convert to seconds
         
         updateMenuBarProgress(totalTime: 1, remainingTime: 1)
     }
@@ -286,5 +286,5 @@ class SoundPlayer {
 // 预览支持
 #Preview {
     ContentView()
-        .environmentObject(AppDelegate()) // 添加这行以支持预览
+        .environmentObject(AppDelegate()) // Add this line to support preview
 }
