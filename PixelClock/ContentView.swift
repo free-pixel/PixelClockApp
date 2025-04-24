@@ -33,7 +33,7 @@ struct ContentView: View {
 
     var body: some View {
         VStack {
-            Text("Pomodoro Timer")
+            Text("🍅番茄计时器🍅")
                 .font(.largeTitle)
                 .padding()
 
