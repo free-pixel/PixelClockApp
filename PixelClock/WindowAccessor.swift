@@ -1,8 +1,8 @@
 //
 //  WindowAccessor.swift
-//  appxclose
+//  PixelClock
 //
-//  Created by 何垒 on 2025/4/24.
+//  Created by FreePixelGames on 2025/4/24.
 //
 
 
