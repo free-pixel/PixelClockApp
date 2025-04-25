@@ -1,13 +1,13 @@
+
 # PixelClock - Pomodoro Timer for Mac
 
 English | [简体中文](README-ZH_CN.md) | [繁體中文](README-ZH_HANS.md) | [🌍 Website](https://free-pixel.github.io)
 
+**If you find this project helpful, please ⭐ Star it. Your support is very important to us!**
 
 PixelClock is a Pomodoro timer app designed to help you boost productivity. You can customize your Pomodoro timer with work durations, task details, break times, and long break times.
 
 After completing 4 Pomodoros, PixelClock will automatically trigger a long break, allowing you to relax and recharge.
-
-**If you find this project helpful, please ⭐ Star it. Your support is very important to us!**
 
 **Key Features:**
 
