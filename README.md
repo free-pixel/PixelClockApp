@@ -7,6 +7,8 @@ PixelClock is a Pomodoro timer app designed to help you boost productivity. You 
 
 After completing 4 Pomodoros, PixelClock will automatically trigger a long break, allowing you to relax and recharge.
 
+**If you find this project helpful, please ⭐ Star it. Your support is very important to us!**
+
 **Key Features:**
 
 - **Custom Time Settings**: Adjust work time, short break time, and long break time according to your needs.
