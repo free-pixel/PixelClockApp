@@ -2,7 +2,7 @@
 //  WindowAccessor.swift
 //  PixelClock
 //
-//  Created by FreePixelGames on 2025/4/24.
+//  Created by FreePixel (freepixel@rockstonegame.com) on 2025/4/24.
 //
 
 
