@@ -2,7 +2,7 @@
 //  PixelClockApp.swift
 //  PixelClock
 //
-//  Created by FreePixelGames on 2025/4/23.
+//  Created by FreePixel (freepixel@rockstonegame.com) on 2025/4/23.
 //
 
 import SwiftUI
