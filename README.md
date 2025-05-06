@@ -47,6 +47,12 @@ After completing 4 Pomodoros, PixelClock will automatically trigger a long break
 
   After completing work, the app will automatically switch to long break mode to ensure you have enough recovery time.
 
+
+## License
+
+This project is licensed under the [MIT License](./LICENSE).  
+Copyright © 2025 Rock Stone
+
 **WARNNING**
 
 I'm currently building an application on the Mac OS version 15.4.1 . If the application fails to run properly, you can 
