@@ -3,6 +3,16 @@
 
 English | [简体中文](README-ZH_CN.md) | [繁體中文](README-ZH_HANS.md) | [🌍 Website](https://free-pixel.github.io)
 
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
+![Last Commit](https://img.shields.io/github/last-commit/free-pixel/PixelClockApp)
+![Open Issues](https://img.shields.io/github/issues/free-pixel/PixelClockApp)
+![Pull Requests](https://img.shields.io/github/issues-pr/free-pixel/PixelClockApp)
+![License](https://img.shields.io/github/license/free-pixel/PixelClockApp)
+![Swift](https://img.shields.io/badge/built_with-Swift-orange?logo=swift)
+![Platform](https://img.shields.io/badge/platform-macOS-blue)
+![GitHub Stars](https://img.shields.io/github/stars/free-pixel/PixelClockApp?style=social)
+
+
 **If you find this project helpful, please ⭐ Star it. Your support is very important to us!**
 
 PixelClock is a Pomodoro timer app designed to help you boost productivity. You can customize your Pomodoro timer with work durations, task details, break times, and long break times.
