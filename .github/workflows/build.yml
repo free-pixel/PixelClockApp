@@ -8,20 +8,21 @@ on:
 
 jobs:
   build:
-    runs-on: macos-15  # GitHub Actions 提供的 macOS Sequoia 环境，内置 Xcode 16
+    # 必须使用 macos-14 或 macos-15 才能拥有支持该项目的 Xcode 环境
+    runs-on: macos-15
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Select Xcode Version
+        # 显式选择 Xcode 16.1，确保能解析新版项目结构
         run: sudo xcode-select -s /Applications/Xcode_16.1.app
 
       - name: Build with xcodebuild
         run: |
-          # 1. 确保在包含 .xcodeproj 的目录下运行
-          # 2. 如果项目有多个 Scheme，这里必须指定具体的名字
-          # 3. CODE_SIGNING_ALLOWED=NO 允许在云端无证书环境下编译
+          # 1. 如果你的工程文件在子目录，请先 cd 进去
+          # 2. CODE_SIGNING_ALLOWED=NO 是关键，因为 GitHub 虚拟机没有你的开发证书
           xcodebuild -project PixelClock.xcodeproj \
                      -scheme PixelClock \
                      -configuration Release \
@@ -35,4 +36,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: PixelClock-Mac-App
+          # 这是编译后生成的 .app 所在路径
           path: build/Build/Products/Release/PixelClock.app
