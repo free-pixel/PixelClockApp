@@ -1,0 +1,36 @@
+name: Build Mac App
+
+on:
+  push:
+    branches: [ "main" ]  # 当你向 main 分支推送代码时触发
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    # 使用 GitHub 提供的最新 macOS 环境（内含 Xcode 16）
+    runs-on: macos-15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set Xcode Version
+        # 指定使用 Xcode 16.1
+        run: sudo xcode-select -s /Applications/Xcode_16.1.app
+
+      - name: Build Mac App
+        run: |
+          xcodebuild -project PixelClock.xcodeproj \
+                     -scheme PixelClock \
+                     -configuration Release \
+                     -derivedDataPath build \
+                     CODE_SIGN_IDENTITY="" \
+                     CODE_SIGNING_REQUIRED=NO \
+                     CODE_SIGNING_ALLOWED=NO
+          
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PixelClock-Mac-App
+          path: build/Build/Products/Release/PixelClock.app
