@@ -57,6 +57,16 @@ After completing 4 Pomodoros, PixelClock will automatically trigger a long break
 
   After completing work, the app will automatically switch to long break mode to ensure you have enough recovery time.
 
+## Installation Notes
+
+* **Architecture Support**: Now supports both **Intel** and **Apple Silicon (M1/M2/M3)**.
+* **Latest Version**: Please download **v1.0.22** or later for the best experience.
+* **Fix "App Damaged" or Developer Verification Error**:
+If you encounter security warnings, open Terminal and run the following command:
+```bash
+xattr -cr PixelClock.app
+
+```
 
 ## License
 
