@@ -10,6 +10,11 @@ jobs:
   build:
     name: Build Release
     runs-on: macos-latest
+    
+    # --- 关键修改：在这里添加权限声明，解决 HTTP 403 问题 ---
+    permissions:
+      contents: write
+    # --------------------------------------------------
 
     steps:
     - name: Checkout repository
