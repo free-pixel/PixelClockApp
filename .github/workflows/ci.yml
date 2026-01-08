@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: '15.0'
+
+    - name: Show environment
+      run: |
+        echo "## Environment" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- **OS**: $(sw_vers -productName) $(sw_vers -productVersion)" >> $GITHUB_STEP_SUMMARY
+        echo "- **Xcode**: $(xcodebuild -version | head -1)" >> $GITHUB_STEP_SUMMARY
+        echo "- **Swift**: $(swift --version | head -1)" >> $GITHUB_STEP_SUMMARY
+
+    - name: Build (Debug)
+      run: |
+        xcodebuild -project PixelClock.xcodeproj \
+          -target PixelClock \
+          -configuration Debug \
+          clean build \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          CODE_SIGNING_ALLOWED=NO
+
+    - name: Build (Release)
+      run: |
+        xcodebuild -project PixelClock.xcodeproj \
+          -target PixelClock \
+          -configuration Release \
+          clean build \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          CODE_SIGNING_ALLOWED=NO
+
+    - name: Run Tests
+      run: |
+        xcodebuild -project PixelClock.xcodeproj \
+          -target PixelClockTests \
+          -configuration Debug \
+          test \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          CODE_SIGNING_ALLOWED=NO
+
+    - name: Verify binaries
+      run: |
+        echo "### Debug Binary" >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+        file build/Debug/PixelClock.app/Contents/MacOS/PixelClock >> $GITHUB_STEP_SUMMARY
+        lipo -info build/Debug/PixelClock.app/Contents/MacOS/PixelClock >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Release Binary" >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+        file build/Release/PixelClock.app/Contents/MacOS/PixelClock >> $GITHUB_STEP_SUMMARY
+        lipo -info build/Release/PixelClock.app/Contents/MacOS/PixelClock >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY

@@ -80,7 +80,7 @@ struct ContentView: View {
                     .padding()
                     .disabled(timerRunning)
                     .focusable(false)
-                    .onChange(of: taskDuration) { oldValue, newValue in // 使用新的onChange语法
+                    .onChange(of: taskDuration) { newValue in
                         if currentState == "Task" && !timerRunning {
                             DispatchQueue.main.async {
                                 timerValue = newValue * 60
@@ -93,7 +93,7 @@ struct ContentView: View {
                     .padding()
                     .disabled(timerRunning)
                     .focusable(false)
-                    .onChange(of: breakDuration) { oldValue, newValue in
+                    .onChange(of: breakDuration) { newValue in
                         if currentState == "Break" && !timerRunning {
                             DispatchQueue.main.async {
                                 timerValue = newValue * 60
@@ -106,7 +106,7 @@ struct ContentView: View {
                     .padding()
                     .disabled(timerRunning)
                     .focusable(false)
-                    .onChange(of: longBreakDuration) { oldValue, newValue in
+                    .onChange(of: longBreakDuration) { newValue in
                         if currentState == "Long Break" && !timerRunning {
                             DispatchQueue.main.async {
                                 timerValue = newValue * 60

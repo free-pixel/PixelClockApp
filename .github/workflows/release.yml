@@ -1,0 +1,71 @@
+name: Release Build
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Release
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Show environment info
+      run: |
+        echo "## Build Environment" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- **Runner OS**: ${{ runner.os }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Runner Arch**: ${{ runner.arch }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Software Versions" >> $GITHUB_STEP_SUMMARY
+        xcodebuild -version >> $GITHUB_STEP_SUMMARY
+        swift --version >> $GITHUB_STEP_SUMMARY
+
+    - name: Build PixelClock (Release Universal)
+      run: |
+        xcodebuild -project PixelClock.xcodeproj \
+          -target PixelClock \
+          -configuration Release \
+          clean build \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          CODE_SIGNING_ALLOWED=NO
+
+    - name: Verify binary
+      run: |
+        echo "### Binary Information" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+        file build/Release/PixelClock.app/Contents/MacOS/PixelClock >> $GITHUB_STEP_SUMMARY
+        lipo -info build/Release/PixelClock.app/Contents/MacOS/PixelClock >> $GITHUB_STEP_SUMMARY
+        ls -lh build/Release/PixelClock.app/Contents/MacOS/PixelClock >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+
+    - name: Create ZIP archive
+      run: |
+        cd build/Release
+        zip -r PixelClock-Release-macOS.zip PixelClock.app
+        echo "ZIP_PATH=build/Release/PixelClock-Release-macOS.zip" >> $GITHUB_ENV
+
+    - name: Create Release
+      if: startsWith(github.ref, 'refs/tags/v')
+      uses: softprops/action-gh-release@v1
+      with:
+        files: build/Release/PixelClock-Release-macOS.zip
+        draft: false
+        prerelease: false
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: PixelClock-Release-macOS
+        path: build/Release/PixelClock-Release-macOS.zip
+        retention-days: 90
