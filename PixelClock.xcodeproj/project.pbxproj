@@ -7,368 +7,378 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-	01DE3D91F36E49DB85636DF6 /* PixelClockApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973448CA3A8F479FA3CF98BE /* PixelClockApp.swift */; };
-	D7ECB285B87C4520831C2945 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E92C37C2A3A4C6FBBDD837A /* ContentView.swift */; };
-	E49E7550C5174DA9918A4598 /* WindowAccessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26D6FDFBA9E4A8ABA71D520 /* WindowAccessor.swift */; };
-	E1EE8E1C10D34996BAD2C613 /* alert.wav in Resources */ = {isa = PBXBuildFile; fileRef = AE790ECCA04E4300A39C17FC /* alert.wav */; };
-	06BE74E5956B4DBA9F405D8C /* PixelClockTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA887E874D5745E89B5A08F8 /* PixelClockTests.swift */; };
+		01DE3D91F36E49DB85636DF6 /* PixelClockApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973448CA3A8F479FA3CF98BE /* PixelClockApp.swift */; };
+		06BE74E5956B4DBA9F405D8C /* PixelClockTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA887E874D5745E89B5A08F8 /* PixelClockTests.swift */; };
+		D7ECB285B87C4520831C2945 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E92C37C2A3A4C6FBBDD837A /* ContentView.swift */; };
+		E1EE8E1C10D34996BAD2C613 /* Resources/alert.wav in Resources */ = {isa = PBXBuildFile; fileRef = AE790ECCA04E4300A39C17FC /* Resources/alert.wav */; };
+		E49E7550C5174DA9918A4598 /* WindowAccessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26D6FDFBA9E4A8ABA71D520 /* WindowAccessor.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		DA666829AA224CC8A0E92B56 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D32A6E8734654B0E918713AC /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = ECB48724CA764232AD260D03;
+			remoteInfo = PixelClock;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
-	CA5F44CE4498498FA6A4D0E1 /* PixelClock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PixelClock.app; sourceTree = BUILT_PRODUCTS_DIR; };
-	973448CA3A8F479FA3CF98BE /* PixelClockApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelClockApp.swift; sourceTree = "<group>"; };
-	6E92C37C2A3A4C6FBBDD837A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-	B26D6FDFBA9E4A8ABA71D520 /* WindowAccessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowAccessor.swift; sourceTree = "<group>"; };
-	AE790ECCA04E4300A39C17FC /* alert.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Resources/alert.wav; sourceTree = "<group>"; };
-	67C1243908284A249536199C /* PixelClockTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PixelClockTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-	DA887E874D5745E89B5A08F8 /* PixelClockTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelClockTests.swift; sourceTree = "<group>"; };
+		67C1243908284A249536199C /* PixelClockTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PixelClockTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		6E92C37C2A3A4C6FBBDD837A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		973448CA3A8F479FA3CF98BE /* PixelClockApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelClockApp.swift; sourceTree = "<group>"; };
+		AE790ECCA04E4300A39C17FC /* Resources/alert.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Resources/alert.wav; sourceTree = "<group>"; };
+		B26D6FDFBA9E4A8ABA71D520 /* WindowAccessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowAccessor.swift; sourceTree = "<group>"; };
+		CA5F44CE4498498FA6A4D0E1 /* PixelClock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PixelClock.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DA887E874D5745E89B5A08F8 /* PixelClockTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelClockTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-	E2C6AF0F23994D5EADCDDB32 /* Frameworks */ = {
-		isa = PBXFrameworksBuildPhase;
-		buildActionMask = 2147483647;
-		files = (
-		);
-		runOnlyForDeploymentPostprocessing = 0;
-	};
-	696C438CBE4E4F5BA9593598 /* Frameworks */ = {
-		isa = PBXFrameworksBuildPhase;
-		buildActionMask = 2147483647;
-		files = (
-		);
-		runOnlyForDeploymentPostprocessing = 0;
-	};
+		696C438CBE4E4F5BA9593598 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E2C6AF0F23994D5EADCDDB32 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-	7E84F72AE3C84D75A428F8A3 = {
-		isa = PBXGroup;
-		children = (
-			69F3D398BC704053BBDA8282 /* PixelClock */,
-			9D0765F53AC24961A7647CA5 /* PixelClockTests */,
-			69840DAF5D484FECB1AE4A02 /* Products */,
-		);
-		sourceTree = "<group>";
-	};
-	69F3D398BC704053BBDA8282 /* PixelClock */ = {
-		isa = PBXGroup;
-		children = (
-			973448CA3A8F479FA3CF98BE /* PixelClockApp.swift */,
-			6E92C37C2A3A4C6FBBDD837A /* ContentView.swift */,
-			B26D6FDFBA9E4A8ABA71D520 /* WindowAccessor.swift */,
-			AE790ECCA04E4300A39C17FC /* alert.wav */,
-		);
-		path = PixelClock;
-		sourceTree = "<group>";
-	};
-	9D0765F53AC24961A7647CA5 /* PixelClockTests */ = {
-		isa = PBXGroup;
-		children = (
-			DA887E874D5745E89B5A08F8 /* PixelClockTests.swift */,
-		);
-		path = PixelClockTests;
-		sourceTree = "<group>";
-	};
-	69840DAF5D484FECB1AE4A02 /* Products */ = {
-		isa = PBXGroup;
-		children = (
-			CA5F44CE4498498FA6A4D0E1 /* PixelClock.app */,
-			67C1243908284A249536199C /* PixelClockTests.xctest */,
-		);
-		name = Products;
-		sourceTree = "<group>";
-	};
+		69840DAF5D484FECB1AE4A02 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CA5F44CE4498498FA6A4D0E1 /* PixelClock.app */,
+				67C1243908284A249536199C /* PixelClockTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		69F3D398BC704053BBDA8282 /* PixelClock */ = {
+			isa = PBXGroup;
+			children = (
+				973448CA3A8F479FA3CF98BE /* PixelClockApp.swift */,
+				6E92C37C2A3A4C6FBBDD837A /* ContentView.swift */,
+				B26D6FDFBA9E4A8ABA71D520 /* WindowAccessor.swift */,
+				AE790ECCA04E4300A39C17FC /* Resources/alert.wav */,
+			);
+			path = PixelClock;
+			sourceTree = "<group>";
+		};
+		7E84F72AE3C84D75A428F8A3 = {
+			isa = PBXGroup;
+			children = (
+				69F3D398BC704053BBDA8282 /* PixelClock */,
+				9D0765F53AC24961A7647CA5 /* PixelClockTests */,
+				69840DAF5D484FECB1AE4A02 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		9D0765F53AC24961A7647CA5 /* PixelClockTests */ = {
+			isa = PBXGroup;
+			children = (
+				DA887E874D5745E89B5A08F8 /* PixelClockTests.swift */,
+			);
+			path = PixelClockTests;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-	ECB48724CA764232AD260D03 /* PixelClock */ = {
-		isa = PBXNativeTarget;
-		buildConfigurationList = F23D925124D24CFBA9DBAACD /* Build configuration list for PBXNativeTarget "PixelClock" */;
-		buildPhases = (
-			B4B8C97DE4054847A5C47206 /* Sources */,
-			E2C6AF0F23994D5EADCDDB32 /* Frameworks */,
-			BB099063D735460E97953BD7 /* Resources */,
-		);
-		buildRules = (
-		);
-		dependencies = (
-		);
-		name = PixelClock;
-		productName = PixelClock;
-		productReference = CA5F44CE4498498FA6A4D0E1 /* PixelClock.app */;
-		productType = "com.apple.product-type.application";
-	};
-	CB8A3789CA2A41CFAFCFA716 /* PixelClockTests */ = {
-		isa = PBXNativeTarget;
-		buildConfigurationList = F74C401DB34F423B8FE9CA2D /* Build configuration list for PBXNativeTarget "PixelClockTests" */;
-		buildPhases = (
-			D352EC8388C146438F576B46 /* Sources */,
-			696C438CBE4E4F5BA9593598 /* Frameworks */,
-			43E68661B93B4BBA8AC2D36E /* Resources */,
-		);
-		buildRules = (
-		);
-		dependencies = (
-			1C9232D88CF9486C87A6CF22 /* PBXTargetDependency */,
-		);
-		name = PixelClockTests;
-		productName = PixelClockTests;
-		productReference = 67C1243908284A249536199C /* PixelClockTests.xctest */;
-		productType = "com.apple.product-type.bundle.unit-test";
-	};
+		CB8A3789CA2A41CFAFCFA716 /* PixelClockTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F74C401DB34F423B8FE9CA2D /* Build configuration list for PBXNativeTarget "PixelClockTests" */;
+			buildPhases = (
+				D352EC8388C146438F576B46 /* Sources */,
+				696C438CBE4E4F5BA9593598 /* Frameworks */,
+				43E68661B93B4BBA8AC2D36E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1C9232D88CF9486C87A6CF22 /* PBXTargetDependency */,
+			);
+			name = PixelClockTests;
+			productName = PixelClockTests;
+			productReference = 67C1243908284A249536199C /* PixelClockTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		ECB48724CA764232AD260D03 /* PixelClock */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F23D925124D24CFBA9DBAACD /* Build configuration list for PBXNativeTarget "PixelClock" */;
+			buildPhases = (
+				B4B8C97DE4054847A5C47206 /* Sources */,
+				E2C6AF0F23994D5EADCDDB32 /* Frameworks */,
+				BB099063D735460E97953BD7 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PixelClock;
+			productName = PixelClock;
+			productReference = CA5F44CE4498498FA6A4D0E1 /* PixelClock.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-	D32A6E8734654B0E918713AC /* Project object */ = {
-		isa = PBXProject;
-		attributes = {
-			BuildIndependentTargetsInParallel = 1;
-			LastUpgradeCheck = 1500;
-			TargetAttributes = {
-				ECB48724CA764232AD260D03 = {
-					CreatedOnToolsVersion = 15.0;
-				};
-				CB8A3789CA2A41CFAFCFA716 = {
-					CreatedOnToolsVersion = 15.0;
-					TestTargetID = ECB48724CA764232AD260D03;
+		D32A6E8734654B0E918713AC /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					CB8A3789CA2A41CFAFCFA716 = {
+						CreatedOnToolsVersion = 15.0;
+						TestTargetID = ECB48724CA764232AD260D03;
+					};
+					ECB48724CA764232AD260D03 = {
+						CreatedOnToolsVersion = 15.0;
+					};
 				};
 			};
+			buildConfigurationList = A068073C50A64B1CA67B2F33 /* Build configuration list for PBXProject "PixelClock" */;
+			compatibilityVersion = "Xcode 13.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 7E84F72AE3C84D75A428F8A3;
+			productRefGroup = 69840DAF5D484FECB1AE4A02 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				ECB48724CA764232AD260D03 /* PixelClock */,
+				CB8A3789CA2A41CFAFCFA716 /* PixelClockTests */,
+			);
 		};
-		buildConfigurationList = A068073C50A64B1CA67B2F33 /* Build configuration list for PBXProject "PixelClock" */;
-		developmentRegion = en;
-		hasScannedForEncodings = 0;
-		knownRegions = (
-			en,
-			Base,
-		);
-		mainGroup = 7E84F72AE3C84D75A428F8A3;
-		productRefGroup = 69840DAF5D484FECB1AE4A02;
-		projectDirPath = "";
-		projectRoot = "";
-		targets = (
-			ECB48724CA764232AD260D03 /* PixelClock */,
-			CB8A3789CA2A41CFAFCFA716 /* PixelClockTests */,
-		);
-	};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-	BB099063D735460E97953BD7 /* Resources */ = {
-		isa = PBXResourcesBuildPhase;
-		buildActionMask = 2147483647;
-		files = (
-			E1EE8E1C10D34996BAD2C613 /* alert.wav in Resources */,
-		);
-		runOnlyForDeploymentPostprocessing = 0;
-	};
-	43E68661B93B4BBA8AC2D36E /* Resources */ = {
-		isa = PBXResourcesBuildPhase;
-		buildActionMask = 2147483647;
-		files = (
-		);
-		runOnlyForDeploymentPostprocessing = 0;
-	};
+		43E68661B93B4BBA8AC2D36E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BB099063D735460E97953BD7 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E1EE8E1C10D34996BAD2C613 /* Resources/alert.wav in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-	B4B8C97DE4054847A5C47206 /* Sources */ = {
-		isa = PBXSourcesBuildPhase;
-		buildActionMask = 2147483647;
-		files = (
-			01DE3D91F36E49DB85636DF6 /* PixelClockApp.swift in Sources */,
-			D7ECB285B87C4520831C2945 /* ContentView.swift in Sources */,
-			E49E7550C5174DA9918A4598 /* WindowAccessor.swift in Sources */,
-		);
-		runOnlyForDeploymentPostprocessing = 0;
-	};
-	D352EC8388C146438F576B46 /* Sources */ = {
-		isa = PBXSourcesBuildPhase;
-		buildActionMask = 2147483647;
-		files = (
-			06BE74E5956B4DBA9F405D8C /* PixelClockTests.swift in Sources */,
-		);
-		runOnlyForDeploymentPostprocessing = 0;
-	};
+		B4B8C97DE4054847A5C47206 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				01DE3D91F36E49DB85636DF6 /* PixelClockApp.swift in Sources */,
+				D7ECB285B87C4520831C2945 /* ContentView.swift in Sources */,
+				E49E7550C5174DA9918A4598 /* WindowAccessor.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D352EC8388C146438F576B46 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				06BE74E5956B4DBA9F405D8C /* PixelClockTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-	1C9232D88CF9486C87A6CF22 /* PBXTargetDependency */ = {
-		isa = PBXTargetDependency;
-		target = ECB48724CA764232AD260D03 /* PixelClock */;
-		targetProxy = DA666829AA224CC8A0E92B56 /* PBXContainerItemProxy */;
-	};
+		1C9232D88CF9486C87A6CF22 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = ECB48724CA764232AD260D03 /* PixelClock */;
+			targetProxy = DA666829AA224CC8A0E92B56 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
-/* Begin PBXContainerItemProxy section */
-	DA666829AA224CC8A0E92B56 /* PBXContainerItemProxy */ = {
-		isa = PBXContainerItemProxy;
-		containerPortal = D32A6E8734654B0E918713AC /* Project object */;
-		proxyType = 1;
-		remoteGlobalIDString = ECB48724CA764232AD260D03;
-		remoteInfo = PixelClock;
-	};
-/* End PBXContainerItemProxy section */
-
 /* Begin XCBuildConfiguration section */
-	02AE35C2262D4756997CC405 /* Debug */ = {
-		isa = XCBuildConfiguration;
-		buildSettings = {
-			ALWAYS_SEARCH_USER_PATHS = NO;
-			CLANG_ENABLE_MODULES = YES;
-			CLANG_ENABLE_OBJC_ARC = YES;
-			COPY_PHASE_STRIP = NO;
-			DEBUG_INFORMATION_FORMAT = dwarf;
-			ENABLE_STRICT_OBJC_MSGSEND = YES;
-			ENABLE_TESTABILITY = YES;
-			GCC_C_LANGUAGE_STANDARD = gnu17;
-			GCC_DYNAMIC_NO_PIC = NO;
-			GCC_NO_COMMON_BLOCKS = YES;
-			GCC_OPTIMIZATION_LEVEL = 0;
-			GCC_PREPROCESSOR_DEFINITIONS = ("DEBUG=1", "$(inherited)");
-			GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-			GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-			GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-			GCC_WARN_UNUSED_FUNCTION = YES;
-			GCC_WARN_UNUSED_VARIABLE = YES;
-			MACOSX_DEPLOYMENT_TARGET = 13.0;
-			MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-			MTL_FAST_MATH = YES;
-			ONLY_ACTIVE_ARCH = YES;
-			SDKROOT = macosx;
-			SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
-			SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+		02AE35C2262D4756997CC405 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
 		};
-		name = Debug;
-	};
-	E32E67DFE43E4287BCF60555 /* Release */ = {
-		isa = XCBuildConfiguration;
-		buildSettings = {
-			ALWAYS_SEARCH_USER_PATHS = NO;
-			CLANG_ENABLE_MODULES = YES;
-			CLANG_ENABLE_OBJC_ARC = YES;
-			COPY_PHASE_STRIP = NO;
-			DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-			ENABLE_NS_ASSERTIONS = NO;
-			ENABLE_STRICT_OBJC_MSGSEND = YES;
-			GCC_C_LANGUAGE_STANDARD = gnu17;
-			GCC_NO_COMMON_BLOCKS = YES;
-			GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-			GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-			GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-			GCC_WARN_UNUSED_FUNCTION = YES;
-			GCC_WARN_UNUSED_VARIABLE = YES;
-			MACOSX_DEPLOYMENT_TARGET = 13.0;
-			MTL_ENABLE_DEBUG_INFO = NO;
-			MTL_FAST_MATH = YES;
-			SDKROOT = macosx;
-			SWIFT_COMPILATION_MODE = wholemodule;
-			VALIDATE_PRODUCT = YES;
+		24466C6F1A3E44AABBC1ECF6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rockstonegame.clock.PixelClockTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PixelClock.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PixelClock";
+			};
+			name = Release;
 		};
-		name = Release;
-	};
-	4EACE830B0F240AF8B08346E /* Debug */ = {
-		isa = XCBuildConfiguration;
-		buildSettings = {
-			ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-			CODE_SIGN_STYLE = Automatic;
-			CURRENT_PROJECT_VERSION = 1;
-			ENABLE_PREVIEWS = YES;
-			GENERATE_INFOPLIST_FILE = YES;
-			INFOPLIST_KEY_CFBundleDisplayName = "Pixel Clock";
-			INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-			LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/../Frameworks");
-			MARKETING_VERSION = 1.0;
-			PRODUCT_BUNDLE_IDENTIFIER = com.rockstonegame.clock.PixelClock;
-			PRODUCT_NAME = "$(TARGET_NAME)";
-			SWIFT_EMIT_LOC_STRINGS = YES;
-			SWIFT_VERSION = 5.0;
+		4EACE830B0F240AF8B08346E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Pixel Clock";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rockstonegame.clock.PixelClock;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
 		};
-		name = Debug;
-	};
-	EF32E58C01E04F58B1D25C43 /* Release */ = {
-		isa = XCBuildConfiguration;
-		buildSettings = {
-			ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-			CODE_SIGN_STYLE = Automatic;
-			CURRENT_PROJECT_VERSION = 1;
-			ENABLE_PREVIEWS = YES;
-			GENERATE_INFOPLIST_FILE = YES;
-			INFOPLIST_KEY_CFBundleDisplayName = "Pixel Clock";
-			INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
-			LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/../Frameworks");
-			MARKETING_VERSION = 1.0;
-			PRODUCT_BUNDLE_IDENTIFIER = com.rockstonegame.clock.PixelClock;
-			PRODUCT_NAME = "$(TARGET_NAME)";
-			SWIFT_EMIT_LOC_STRINGS = YES;
-			SWIFT_VERSION = 5.0;
+		5A9742F79FC84EC4B5CA530B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rockstonegame.clock.PixelClockTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PixelClock.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PixelClock";
+			};
+			name = Debug;
 		};
-		name = Release;
-	};
-	5A9742F79FC84EC4B5CA530B /* Debug */ = {
-		isa = XCBuildConfiguration;
-		buildSettings = {
-			BUNDLE_LOADER = "$(TEST_HOST)";
-			CODE_SIGN_STYLE = Automatic;
-			CURRENT_PROJECT_VERSION = 1;
-			GENERATE_INFOPLIST_FILE = YES;
-			MACOSX_DEPLOYMENT_TARGET = 13.0;
-			MARKETING_VERSION = 1.0;
-			PRODUCT_BUNDLE_IDENTIFIER = com.rockstonegame.clock.PixelClockTests;
-			PRODUCT_NAME = "$(TARGET_NAME)";
-			SWIFT_EMIT_LOC_STRINGS = NO;
-			SWIFT_VERSION = 5.0;
-			TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PixelClock.app/$(EXECUTABLE_PATH)";
+		E32E67DFE43E4287BCF60555 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
 		};
-		name = Debug;
-	};
-	24466C6F1A3E44AABBC1ECF6 /* Release */ = {
-		isa = XCBuildConfiguration;
-		buildSettings = {
-			BUNDLE_LOADER = "$(TEST_HOST)";
-			CODE_SIGN_STYLE = Automatic;
-			CURRENT_PROJECT_VERSION = 1;
-			GENERATE_INFOPLIST_FILE = YES;
-			MACOSX_DEPLOYMENT_TARGET = 13.0;
-			MARKETING_VERSION = 1.0;
-			PRODUCT_BUNDLE_IDENTIFIER = com.rockstonegame.clock.PixelClockTests;
-			PRODUCT_NAME = "$(TARGET_NAME)";
-			SWIFT_EMIT_LOC_STRINGS = NO;
-			SWIFT_VERSION = 5.0;
-			TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PixelClock.app/$(EXECUTABLE_PATH)";
+		EF32E58C01E04F58B1D25C43 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Pixel Clock";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.rockstonegame.clock.PixelClock;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
 		};
-		name = Release;
-	};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-	A068073C50A64B1CA67B2F33 /* Build configuration list for PBXProject "PixelClock" */ = {
-		isa = XCConfigurationList;
-		buildConfigurations = (
-			02AE35C2262D4756997CC405 /* Debug */,
-			E32E67DFE43E4287BCF60555 /* Release */,
-		);
-		defaultConfigurationIsVisible = 0;
-		defaultConfigurationName = Release;
-	};
-	F23D925124D24CFBA9DBAACD /* Build configuration list for PBXNativeTarget "PixelClock" */ = {
-		isa = XCConfigurationList;
-		buildConfigurations = (
-			4EACE830B0F240AF8B08346E /* Debug */,
-			EF32E58C01E04F58B1D25C43 /* Release */,
-		);
-		defaultConfigurationIsVisible = 0;
-		defaultConfigurationName = Release;
-	};
-	F74C401DB34F423B8FE9CA2D /* Build configuration list for PBXNativeTarget "PixelClockTests" */ = {
-		isa = XCConfigurationList;
-		buildConfigurations = (
-			5A9742F79FC84EC4B5CA530B /* Debug */,
-			24466C6F1A3E44AABBC1ECF6 /* Release */,
-		);
-		defaultConfigurationIsVisible = 0;
-		defaultConfigurationName = Release;
-	};
+		A068073C50A64B1CA67B2F33 /* Build configuration list for PBXProject "PixelClock" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				02AE35C2262D4756997CC405 /* Debug */,
+				E32E67DFE43E4287BCF60555 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F23D925124D24CFBA9DBAACD /* Build configuration list for PBXNativeTarget "PixelClock" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4EACE830B0F240AF8B08346E /* Debug */,
+				EF32E58C01E04F58B1D25C43 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F74C401DB34F423B8FE9CA2D /* Build configuration list for PBXNativeTarget "PixelClockTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5A9742F79FC84EC4B5CA530B /* Debug */,
+				24466C6F1A3E44AABBC1ECF6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 	};
 	rootObject = D32A6E8734654B0E918713AC /* Project object */;
