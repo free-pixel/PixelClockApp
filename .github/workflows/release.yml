@@ -37,36 +37,48 @@ jobs:
           clean build CODE_SIGNING_ALLOWED=NO MACOSX_DEPLOYMENT_TARGET=13.0 \
           ARCHS="arm64" ONLY_ACTIVE_ARCH=NO
 
+    - name: Build PixelClock (Release)
+      run: |
+        # 使用绝对路径确保万无一失
+        xcodebuild -project PixelClock.xcodeproj \
+          -scheme PixelClock \
+          -configuration Release \
+          -derivedDataPath "$GITHUB_WORKSPACE/build/DerivedData" \
+          -sdk macosx \
+          -destination 'platform=macOS' \
+          clean build \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          CODE_SIGNING_ALLOWED=NO \
+          MACOSX_DEPLOYMENT_TARGET=13.0 \
+          ARCHS="arm64 x86_64" \
+          ONLY_ACTIVE_ARCH=NO
+
     - name: Create ZIP archive
       run: |
-        # 1. 设置变量
         VERSION="${GITHUB_REF#refs/tags/}"
         ZIP_NAME="PixelClock-${VERSION}-macOS-Universal.zip"
-        RELEASE_DIR="build/DerivedData/Build/Products/Release"
         
-        # 2. 进入产物目录
+        # 使用绝对路径定位到产物目录
+        RELEASE_DIR="$GITHUB_WORKSPACE/build/DerivedData/Build/Products/Release"
+        
+        # 打印当前目录结构，如果报错，方便我们在日志里查路径
+        echo "Searching for App in: $RELEASE_DIR"
+        
+        if [ ! -d "$RELEASE_DIR/PixelClock.app" ]; then
+          echo "ERROR: PixelClock.app not found. Current directory structure:"
+          ls -R "$GITHUB_WORKSPACE/build"
+          exit 1
+        fi
+        
+        # 直接在 Release 目录下压缩，并将输出存到根目录
         cd "$RELEASE_DIR"
-        
-        # 3. 压缩并将压缩包存放到项目根目录 (即 ../../../../../ )
-        # 或者直接用绝对路径 $GITHUB_WORKSPACE
         zip -r "$GITHUB_WORKSPACE/$ZIP_NAME" PixelClock.app
         
-        # 4. 回到根目录 (可选，为了清晰)
+        # 回到根目录，确认为后续步骤准备好了
         cd "$GITHUB_WORKSPACE"
-        echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_ENV
-
-    - name: Create Release
-      if: startsWith(github.ref, 'refs/tags/v')
-      run: |
-        TAG="${GITHUB_REF#refs/tags/}"
-        # 现在根目录下一定能找到这个 zip 了
-        gh release create "$TAG" \
-          --title "Release $TAG" \
-          --notes "Automated release for $TAG (Intel & Apple Silicon versions)" \
-          PixelClock-*-macOS-Universal.zip
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+        echo "ZIP_PATH=$GITHUB_WORKSPACE/$ZIP_NAME" >> $GITHUB_ENV
+    
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
