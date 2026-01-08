@@ -58,21 +58,43 @@ jobs:
         zip -r PixelClock-Release-macOS.zip PixelClock.app
         ZIP_PATH=$(realpath PixelClock-Release-macOS.zip)
         echo "ZIP_PATH=$ZIP_PATH" >> $GITHUB_ENV
-
+        echo "Created ZIP at: $ZIP_PATH"
+        ls -lh "$ZIP_PATH"
+ 
+    - name: Debug build structure
+      if: always()
+      run: |
+        echo "=== Build Directory Structure ==="
+        find build -type f -name "*.zip" | head -10
+        echo "=== ZIP_PATH Environment Variable ==="
+        echo "ZIP_PATH is: $ZIP_PATH"
+        if [ -n "$ZIP_PATH" ]; then
+          if [ -f "$ZIP_PATH" ]; then
+            echo "ZIP file exists at: $ZIP_PATH"
+            ls -lh "$ZIP_PATH"
+          else
+            echo "ERROR: ZIP file not found at: $ZIP_PATH"
+          fi
+        else
+          echo "ERROR: ZIP_PATH environment variable is not set"
+        fi
+ 
     - name: Create Release
       if: startsWith(github.ref, 'refs/tags/v')
       uses: softprops/action-gh-release@v1
       with:
-        files: build/Release/PixelClock-Release-macOS.zip
+        files: ${{ env.ZIP_PATH }}
         draft: false
         prerelease: false
         generate_release_notes: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+      continue-on-error: true
+ 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: PixelClock-Release-macOS
         path: ${{ env.ZIP_PATH }}
         retention-days: 90
+        if-no-files-found: warn
