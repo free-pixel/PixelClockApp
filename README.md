@@ -61,12 +61,7 @@ After completing 4 Pomodoros, PixelClock will automatically trigger a long break
 
 * **Architecture Support**: Now supports both **Intel** and **Apple Silicon (M1/M2/M3)**.
 * **Latest Version**: Please download **v1.0.22** or later for the best experience.
-* **Fix "App Damaged" or Developer Verification Error**:
-If you encounter security warnings, open Terminal and run the following command:
-```bash
-xattr -cr PixelClock.app
-
-```
+* **Fix "App Damaged" or Developer Verification Error**:  If you encounter security warnings, open Terminal and run the following command: `xattr -cr PixelClock.app`
 
 ## License
 
