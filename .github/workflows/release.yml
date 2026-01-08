@@ -76,13 +76,14 @@ jobs:
         body: |
           ## 🚀 PixelClock ${{ github.ref_name }}
           
-          ### 📦 资产说明
-          - **Universal**: 通用版本（推荐），同时支持 Intel 和 Apple Silicon。
-          - **AppleSilicon**: 仅适用于 M1/M2/M3 芯片。
-          - **Intel**: 仅适用于 Intel 芯片的老款 Mac。
-          
+          ### 📦 Asset Details
+          - **Universal**: Universal binary (recommended) — runs on both Intel and Apple Silicon Macs.  
+          - **Apple Silicon**: For Macs with M1/M2/M3 chips only.  
+          - **Intel**: For older Macs with Intel processors only.
+          - Fix "App Damaged" or verification errors: Run in Terminal: xattr -cr PixelClock.app
+
           ---
-          *由 GitHub Actions 自动构建并发布。*
+          *Automatically built and released by GitHub Actions*
         generate_release_notes: true
         draft: false
         prerelease: false
