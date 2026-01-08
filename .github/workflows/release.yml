@@ -29,9 +29,10 @@ jobs:
     - name: Build PixelClock (Release Universal)
       run: |
         xcodebuild -project PixelClock.xcodeproj \
-          -target PixelClock \
+          -scheme PixelClock \
           -configuration Release \
-          clean build \
+          -derivedDataPath build/DerivedData \
+          build \
           CODE_SIGN_IDENTITY="" \
           CODE_SIGNING_REQUIRED=NO \
           CODE_SIGNING_ALLOWED=NO
@@ -41,9 +42,9 @@ jobs:
         echo "### Binary Information" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo '```' >> $GITHUB_STEP_SUMMARY
-        file build/Release/PixelClock.app/Contents/MacOS/PixelClock >> $GITHUB_STEP_SUMMARY
-        lipo -info build/Release/PixelClock.app/Contents/MacOS/PixelClock >> $GITHUB_STEP_SUMMARY
-        ls -lh build/Release/PixelClock.app/Contents/MacOS/PixelClock >> $GITHUB_STEP_SUMMARY
+        find build -name "PixelClock.app" -type d -exec file {} \; >> $GITHUB_STEP_SUMMARY
+        find build -name "PixelClock" -type f -path "*/MacOS/*" -exec file {} \; >> $GITHUB_STEP_SUMMARY
+        find build -name "PixelClock" -type f -path "*/MacOS/*" -exec ls -lh {} \; >> $GITHUB_STEP_SUMMARY
         echo '```' >> $GITHUB_STEP_SUMMARY
 
     - name: Create ZIP archive
