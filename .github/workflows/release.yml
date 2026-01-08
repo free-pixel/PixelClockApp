@@ -23,56 +23,75 @@ jobs:
         echo "## Build Environment" >> $GITHUB_STEP_SUMMARY
         xcodebuild -version >> $GITHUB_STEP_SUMMARY
 
-    - name: Build PixelClock (Intel & Apple Silicon)
+    - name: Build PixelClock (Intel & Apple Silicon & Universal)
       run: |
-        # --- 1. 编译 Intel 版本 ---
+        # 1. 编译 Intel 版本
         xcodebuild -project PixelClock.xcodeproj -scheme PixelClock -configuration Release \
           -derivedDataPath build/x86_64 -sdk macosx -destination 'platform=macOS' \
           clean build CODE_SIGNING_ALLOWED=NO MACOSX_DEPLOYMENT_TARGET=13.0 \
           ARCHS="x86_64" ONLY_ACTIVE_ARCH=NO
         
-        # --- 2. 编译 Apple Silicon 版本 ---
+        # 2. 编译 Apple Silicon 版本
         xcodebuild -project PixelClock.xcodeproj -scheme PixelClock -configuration Release \
           -derivedDataPath build/arm64 -sdk macosx -destination 'platform=macOS' \
           clean build CODE_SIGNING_ALLOWED=NO MACOSX_DEPLOYMENT_TARGET=13.0 \
           ARCHS="arm64" ONLY_ACTIVE_ARCH=NO
 
-    - name: Build PixelClock (Release)
-      run: |
-        # 使用绝对路径确保万无一失
-        xcodebuild -project PixelClock.xcodeproj \
-          -scheme PixelClock \
-          -configuration Release \
-          -derivedDataPath "$GITHUB_WORKSPACE/build/DerivedData" \
-          -sdk macosx \
-          -destination 'platform=macOS' \
-          clean build \
-          CODE_SIGN_IDENTITY="" \
-          CODE_SIGNING_REQUIRED=NO \
-          CODE_SIGNING_ALLOWED=NO \
-          MACOSX_DEPLOYMENT_TARGET=13.0 \
-          ARCHS="arm64 x86_64" \
-          ONLY_ACTIVE_ARCH=NO
+        # 3. 编译 Universal 版本 (通用二进制)
+        xcodebuild -project PixelClock.xcodeproj -scheme PixelClock -configuration Release \
+          -derivedDataPath "$GITHUB_WORKSPACE/build/DerivedData" -sdk macosx -destination 'platform=macOS' \
+          clean build CODE_SIGNING_ALLOWED=NO MACOSX_DEPLOYMENT_TARGET=13.0 \
+          ARCHS="arm64 x86_64" ONLY_ACTIVE_ARCH=NO
 
     - name: Create Multiple ZIP archives
       run: |
-        VERSION="${GITHUB_REF#refs/tags/}"
+        if [[ $GITHUB_REF == refs/tags/* ]]; then
+          VERSION="${GITHUB_REF#refs/tags/}"
+        else
+          VERSION="manual-${GITHUB_RUN_NUMBER}"
+        fi
         
-        # 打包 Intel 版本 (来自第一步的 derivedDataPath)
+        # 打包 Intel
         cd "$GITHUB_WORKSPACE/build/x86_64/Build/Products/Release"
         zip -r "$GITHUB_WORKSPACE/PixelClock-${VERSION}-macOS-Intel.zip" PixelClock.app
         
-        # 打包 Apple Silicon 版本 (来自第二步的 derivedDataPath)
+        # 打包 Apple Silicon
         cd "$GITHUB_WORKSPACE/build/arm64/Build/Products/Release"
         zip -r "$GITHUB_WORKSPACE/PixelClock-${VERSION}-macOS-AppleSilicon.zip" PixelClock.app
         
-        # 打包 Universal 版本 (来自第三步的 derivedDataPath)
+        # 打包 Universal
         cd "$GITHUB_WORKSPACE/build/DerivedData/Build/Products/Release"
         zip -r "$GITHUB_WORKSPACE/PixelClock-${VERSION}-macOS-Universal.zip" PixelClock.app
 
-    - name: Upload artifact
+    - name: Release to GitHub
+      uses: softprops/action-gh-release@v2
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        # 这里指定的文件会作为 3 个独立的附件出现在 Release 页面
+        files: |
+          PixelClock-*-macOS-Intel.zip
+          PixelClock-*-macOS-AppleSilicon.zip
+          PixelClock-*-macOS-Universal.zip
+        name: PixelClock ${{ github.ref_name }}
+        body: |
+          ## 🚀 PixelClock ${{ github.ref_name }}
+          
+          ### 📦 资产说明
+          - **Universal**: 通用版本（推荐），同时支持 Intel 和 Apple Silicon。
+          - **AppleSilicon**: 仅适用于 M1/M2/M3 芯片。
+          - **Intel**: 仅适用于 Intel 芯片的老款 Mac。
+          
+          ---
+          *由 GitHub Actions 自动构建并发布。*
+        generate_release_notes: true
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Archive artifacts for debugging
       uses: actions/upload-artifact@v4
       with:
-        name: PixelClock-Release-macOS
+        name: PixelClock-Build-Artifacts
         path: "*.zip"
-        retention-days: 90
+        retention-days: 7
