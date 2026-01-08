@@ -23,7 +23,7 @@ jobs:
     - name: Run Unit Tests
       run: |
         xcodebuild -project PixelClock.xcodeproj \
-          -target PixelClockTests \
+          -scheme PixelClock \
           -configuration Debug \
           -enableCodeCoverage YES \
           test \

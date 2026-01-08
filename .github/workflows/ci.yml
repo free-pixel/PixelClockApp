@@ -51,7 +51,7 @@ jobs:
     - name: Run Tests
       run: |
         xcodebuild -project PixelClock.xcodeproj \
-          -target PixelClockTests \
+          -scheme PixelClock \
           -configuration Debug \
           test \
           CODE_SIGN_IDENTITY="" \
