@@ -54,31 +54,22 @@ jobs:
           ARCHS="arm64 x86_64" \
           ONLY_ACTIVE_ARCH=NO
 
-    - name: Create ZIP archive
+    - name: Create Multiple ZIP archives
       run: |
         VERSION="${GITHUB_REF#refs/tags/}"
-        ZIP_NAME="PixelClock-${VERSION}-macOS-Universal.zip"
         
-        # 使用绝对路径定位到产物目录
-        RELEASE_DIR="$GITHUB_WORKSPACE/build/DerivedData/Build/Products/Release"
+        # 打包 Intel 版本 (来自第一步的 derivedDataPath)
+        cd "$GITHUB_WORKSPACE/build/x86_64/Build/Products/Release"
+        zip -r "$GITHUB_WORKSPACE/PixelClock-${VERSION}-macOS-Intel.zip" PixelClock.app
         
-        # 打印当前目录结构，如果报错，方便我们在日志里查路径
-        echo "Searching for App in: $RELEASE_DIR"
+        # 打包 Apple Silicon 版本 (来自第二步的 derivedDataPath)
+        cd "$GITHUB_WORKSPACE/build/arm64/Build/Products/Release"
+        zip -r "$GITHUB_WORKSPACE/PixelClock-${VERSION}-macOS-AppleSilicon.zip" PixelClock.app
         
-        if [ ! -d "$RELEASE_DIR/PixelClock.app" ]; then
-          echo "ERROR: PixelClock.app not found. Current directory structure:"
-          ls -R "$GITHUB_WORKSPACE/build"
-          exit 1
-        fi
-        
-        # 直接在 Release 目录下压缩，并将输出存到根目录
-        cd "$RELEASE_DIR"
-        zip -r "$GITHUB_WORKSPACE/$ZIP_NAME" PixelClock.app
-        
-        # 回到根目录，确认为后续步骤准备好了
-        cd "$GITHUB_WORKSPACE"
-        echo "ZIP_PATH=$GITHUB_WORKSPACE/$ZIP_NAME" >> $GITHUB_ENV
-    
+        # 打包 Universal 版本 (来自第三步的 derivedDataPath)
+        cd "$GITHUB_WORKSPACE/build/DerivedData/Build/Products/Release"
+        zip -r "$GITHUB_WORKSPACE/PixelClock-${VERSION}-macOS-Universal.zip" PixelClock.app
+
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
