@@ -20,14 +20,6 @@ jobs:
       with:
         xcode-version: '16.4.0'
 
-    - name: Show environment
-      run: |
-        echo "## Environment" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "- **OS**: $(sw_vers -productName) $(sw_vers -productVersion)" >> $GITHUB_STEP_SUMMARY
-        echo "- **Xcode**: $(xcodebuild -version | head -1)" >> $GITHUB_STEP_SUMMARY
-        echo "- **Swift**: $(swift --version | head -1)" >> $GITHUB_STEP_SUMMARY
-
     - name: Build (Debug)
       run: |
         xcodebuild -project PixelClock.xcodeproj \
@@ -41,23 +33,14 @@ jobs:
 
     - name: Run Tests
       run: |
+        # 运行测试，利用已提交的共享 Scheme 配置
         xcodebuild -project PixelClock.xcodeproj \
           -scheme PixelClock \
           -configuration Debug \
-          -enableCodeCoverage YES \
+          -derivedDataPath build/DerivedData \
+          -destination 'platform=macOS' \
           test \
           CODE_SIGN_IDENTITY="" \
           CODE_SIGNING_REQUIRED=NO \
           CODE_SIGNING_ALLOWED=NO \
           ONLY_ACTIVE_ARCH=YES
-
-    - name: Verify binary
-      run: |
-        echo "### Debug Binary" >> $GITHUB_STEP_SUMMARY
-        echo '```' >> $GITHUB_STEP_SUMMARY
-        find build -name "PixelClock.app" -type d
-        find build -name "PixelClock" -type f -path "*/MacOS/*" | while read file; do
-          echo "$file"
-          file "$file"
-        done >> $GITHUB_STEP_SUMMARY
-        echo '```' >> $GITHUB_STEP_SUMMARY
