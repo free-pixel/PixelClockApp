@@ -37,29 +37,33 @@ jobs:
           clean build CODE_SIGNING_ALLOWED=NO MACOSX_DEPLOYMENT_TARGET=13.0 \
           ARCHS="arm64" ONLY_ACTIVE_ARCH=NO
 
-    - name: Create ZIP archives
+    - name: Create ZIP archive
       run: |
+        # 1. 设置变量
         VERSION="${GITHUB_REF#refs/tags/}"
+        ZIP_NAME="PixelClock-${VERSION}-macOS-Universal.zip"
+        RELEASE_DIR="build/DerivedData/Build/Products/Release"
         
-        # 打包 Intel
-        cd build/x86_64/Build/Products/Release
-        zip -r "../../../../PixelClock-${VERSION}-Intel.zip" PixelClock.app
-        cd -
+        # 2. 进入产物目录
+        cd "$RELEASE_DIR"
         
-        # 打包 Apple Silicon
-        cd build/arm64/Build/Products/Release
-        zip -r "../../../../PixelClock-${VERSION}-Apple-Silicon.zip" PixelClock.app
-        cd -
+        # 3. 压缩并将压缩包存放到项目根目录 (即 ../../../../../ )
+        # 或者直接用绝对路径 $GITHUB_WORKSPACE
+        zip -r "$GITHUB_WORKSPACE/$ZIP_NAME" PixelClock.app
+        
+        # 4. 回到根目录 (可选，为了清晰)
+        cd "$GITHUB_WORKSPACE"
+        echo "ZIP_NAME=$ZIP_NAME" >> $GITHUB_ENV
 
     - name: Create Release
       if: startsWith(github.ref, 'refs/tags/v')
       run: |
         TAG="${GITHUB_REF#refs/tags/}"
-        # 使用 *.zip 自动上传目录下所有的压缩包
+        # 现在根目录下一定能找到这个 zip 了
         gh release create "$TAG" \
           --title "Release $TAG" \
           --notes "Automated release for $TAG (Intel & Apple Silicon versions)" \
-          *.zip
+          PixelClock-*-macOS-Universal.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
