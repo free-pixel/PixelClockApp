@@ -2,4 +2,61 @@ build/
 version.txt
 
 
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
 
+# Xcode
+DerivedData/
+*.moved-aside
+*.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata/
+*.xccheckout
+*.moved-aside
+*.xcuserstate
+xcshareddata/
+*.hmap
+*.ipa
+*.xcuserstate
+
+# Swift Package Manager
+Packages/
+Package.pins
+Package.resolved
+
+# macOS app bundle
+*.app/
+
+# Backup files
+*.backup
+*.bak
+*.tmp
+*.old
+
+# Logs
+*.log
+logs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+tmp/
+temp/
+
+# Archive files
+*.zip
+*.dmg

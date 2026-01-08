@@ -1,0 +1,52 @@
+name: PixelClock
+options:
+  bundleIdPrefix: com.rockstonegame.clock
+  deploymentTarget:
+    macOS: "13.0"
+  xcodeVersion: "15.0"
+  generateEmptyDirectories: true
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MACOSX_DEPLOYMENT_TARGET: "13.0"
+    SDKROOT: macosx
+
+targets:
+  PixelClock:
+    type: application
+    platform: macOS
+    sources:
+      - path: PixelClock
+        excludes:
+          - "**/.DS_Store"
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.rockstonegame.clock.PixelClock
+        PRODUCT_NAME: PixelClock
+        INFOPLIST_KEY_CFBundleDisplayName: Pixel Clock
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.utilities
+        CODE_SIGN_STYLE: Automatic
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        LD_RUNPATH_SEARCH_PATHS: ["$(inherited)", "@executable_path/../Frameworks"]
+        ENABLE_PREVIEWS: YES
+        SWIFT_EMIT_LOC_STRINGS: YES
+    entitlements:
+      path: PixelClock/PixelClock.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+
+  PixelClockTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: PixelClockTests
+    dependencies:
+      - target: PixelClock
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.rockstonegame.clock.PixelClockTests
+        BUNDLE_LOADER: "$(TEST_HOST)"
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/PixelClock.app/$(EXECUTABLE_PATH)"
+        SWIFT_EMIT_LOC_STRINGS: NO
