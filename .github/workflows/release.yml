@@ -32,6 +32,7 @@ jobs:
           -scheme PixelClock \
           -configuration Release \
           -derivedDataPath build/DerivedData \
+          ARCHS="arm64 x86_64" \
           build \
           CODE_SIGN_IDENTITY="" \
           CODE_SIGNING_REQUIRED=NO \
@@ -81,15 +82,21 @@ jobs:
  
     - name: Create Release
       if: startsWith(github.ref, 'refs/tags/v')
-      uses: softprops/action-gh-release@v1
-      with:
-        files: ${{ env.ZIP_PATH }}
-        draft: false
-        prerelease: false
-        generate_release_notes: true
+      run: |
+        TAG="${GITHUB_REF#refs/tags/}"
+        if [ -f "$ZIP_PATH" ]; then
+          gh release create "$TAG" \
+            --title "Release $TAG" \
+            --notes "Automated release for $TAG" \
+            "$ZIP_PATH"
+        else
+          echo "ERROR: ZIP file not found at $ZIP_PATH"
+          exit 1
+        fi
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      continue-on-error: true
+        ZIP_PATH: ${{ env.ZIP_PATH }}
+        GITHUB_REF: ${{ github.ref }}
  
     - name: Upload artifact
       uses: actions/upload-artifact@v4
