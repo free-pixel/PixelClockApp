@@ -56,6 +56,9 @@ jobs:
       run: |
         echo "### Debug Binary" >> $GITHUB_STEP_SUMMARY
         echo '```' >> $GITHUB_STEP_SUMMARY
-        find build -name "PixelClock.app" -type d -exec file {} \; >> $GITHUB_STEP_SUMMARY
-        find build -name "PixelClock" -type f -path "*/MacOS/*" -exec file {} \; >> $GITHUB_STEP_SUMMARY
+        find build -name "PixelClock.app" -type d
+        find build -name "PixelClock" -type f -path "*/MacOS/*" | while read file; do
+          echo "$file"
+          file "$file"
+        done >> $GITHUB_STEP_SUMMARY
         echo '```' >> $GITHUB_STEP_SUMMARY
