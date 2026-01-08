@@ -11,10 +11,9 @@ jobs:
     name: Build Release
     runs-on: macos-latest
     
-    # --- 关键修改：在这里添加权限声明，解决 HTTP 403 问题 ---
+    # 显式声明权限，解决之前遇到的 HTTP 403 问题
     permissions:
       contents: write
-    # --------------------------------------------------
 
     steps:
     - name: Checkout repository
@@ -25,88 +24,63 @@ jobs:
         echo "## Build Environment" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "- **Runner OS**: ${{ runner.os }}" >> $GITHUB_STEP_SUMMARY
-        echo "- **Runner Arch**: ${{ runner.arch }}" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "### Software Versions" >> $GITHUB_STEP_SUMMARY
         xcodebuild -version >> $GITHUB_STEP_SUMMARY
-        swift --version >> $GITHUB_STEP_SUMMARY
 
-    - name: Build PixelClock (Release Universal)
+    - name: Build PixelClock (Release)
       run: |
+        # 使用标准构建指令，指定输出路径和 SDK
         xcodebuild -project PixelClock.xcodeproj \
           -scheme PixelClock \
           -configuration Release \
           -derivedDataPath build/DerivedData \
-          ARCHS="arm64 x86_64" \
+          -sdk macosx \
+          -destination 'platform=macOS' \
           build \
           CODE_SIGN_IDENTITY="" \
           CODE_SIGNING_REQUIRED=NO \
           CODE_SIGNING_ALLOWED=NO
 
-    - name: Verify binary
-      run: |
-        echo "### Binary Information" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo '```' >> $GITHUB_STEP_SUMMARY
-        find build -name "PixelClock.app" -type d -exec file {} \; >> $GITHUB_STEP_SUMMARY
-        find build -name "PixelClock" -type f -path "*/MacOS/*" -exec file {} \; >> $GITHUB_STEP_SUMMARY
-        find build -name "PixelClock" -type f -path "*/MacOS/*" -exec ls -lh {} \; >> $GITHUB_STEP_SUMMARY
-        echo '```' >> $GITHUB_STEP_SUMMARY
-
     - name: Create ZIP archive
       run: |
-        APP_PATH=$(find build -name "PixelClock.app" -type d | head -1)
-        if [ -z "$APP_PATH" ]; then
-          echo "Error: PixelClock.app not found in build directory"
+        # 1. 定位到标准的 Release 输出目录
+        RELEASE_DIR="build/DerivedData/Build/Products/Release"
+        
+        if [ ! -d "$RELEASE_DIR/PixelClock.app" ]; then
+          echo "ERROR: PixelClock.app not found in $RELEASE_DIR"
+          ls -R build/DerivedData/Build/Products/
           exit 1
         fi
-        cd $(dirname "$APP_PATH")
+        
+        # 2. 进入目录并压缩
+        cd "$RELEASE_DIR"
+        
+        # 打印包信息，方便在 Action 日志中确认架构
+        echo "### Binary Info"
+        file PixelClock.app/Contents/MacOS/PixelClock
+        
         zip -r PixelClock-Release-macOS.zip PixelClock.app
-        ZIP_PATH=$(realpath PixelClock-Release-macOS.zip)
-        echo "ZIP_PATH=$ZIP_PATH" >> $GITHUB_ENV
-        echo "Created ZIP at: $ZIP_PATH"
-        ls -lh "$ZIP_PATH"
- 
-    - name: Debug build structure
-      if: always()
-      run: |
-        echo "=== Build Directory Structure ==="
-        find build -type f -name "*.zip" | head -10
-        echo "=== ZIP_PATH Environment Variable ==="
-        echo "ZIP_PATH is: $ZIP_PATH"
-        if [ -n "$ZIP_PATH" ]; then
-          if [ -f "$ZIP_PATH" ]; then
-            echo "ZIP file exists at: $ZIP_PATH"
-            ls -lh "$ZIP_PATH"
-          else
-            echo "ERROR: ZIP file not found at: $ZIP_PATH"
-          fi
-        else
-          echo "ERROR: ZIP_PATH environment variable is not set"
-        fi
- 
+        
+        # 3. 设置绝对路径到环境变量
+        FULL_PATH=$(realpath PixelClock-Release-macOS.zip)
+        echo "ZIP_PATH=$FULL_PATH" >> $GITHUB_ENV
+        echo "Created ZIP at: $FULL_PATH"
+
     - name: Create Release
       if: startsWith(github.ref, 'refs/tags/v')
       run: |
         TAG="${GITHUB_REF#refs/tags/}"
-        if [ -f "$ZIP_PATH" ]; then
-          gh release create "$TAG" \
-            --title "Release $TAG" \
-            --notes "Automated release for $TAG" \
-            "$ZIP_PATH"
-        else
-          echo "ERROR: ZIP file not found at $ZIP_PATH"
-          exit 1
-        fi
+        # 使用 GitHub 官方 CLI 工具创建 Release 并上传附件
+        gh release create "$TAG" \
+          --title "Release $TAG" \
+          --notes "Automated release for $TAG" \
+          "$ZIP_PATH"
       env:
-        GITHUB_TOKEN: ${{ secrets.MY_RELEASE_PAT }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         ZIP_PATH: ${{ env.ZIP_PATH }}
-        GITHUB_REF: ${{ github.ref }}
- 
+
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: PixelClock-Release-macOS
         path: ${{ env.ZIP_PATH }}
         retention-days: 90
-        if-no-files-found: warn
