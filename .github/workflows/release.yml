@@ -99,7 +99,7 @@ jobs:
           exit 1
         fi
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.MY_RELEASE_PAT }}
         ZIP_PATH: ${{ env.ZIP_PATH }}
         GITHUB_REF: ${{ github.ref }}
  
