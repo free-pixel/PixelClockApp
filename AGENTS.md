@@ -158,9 +158,26 @@ struct PixelClockTests {
 }
 ```
 
+## Security and Confidentiality
+
+### Preventing Secret Leaks
+- Use `.gitignore` to exclude sensitive files (e.g., `*.env`, `*.key`, certificates).
+- Avoid hardcoding secrets in code; use environment variables.
+- Implement pre-commit hooks with TruffleHog for secret scanning.
+- For CI/CD, use GitHub Secrets instead of committing tokens.
+- Regularly audit repository for leaks and use tools like GitGuardian.
+
+### Agent Security Guidelines
+- Do not process or store user secrets (e.g., passwords, API keys).
+- Use isolated environments for sensitive operations.
+- Monitor for prompt injection and output filtering.
+- Follow OWASP AI Agent Security Cheat Sheet for agent-related risks.
+
 ## Resources
 
 - [Swift Documentation](https://developer.apple.com/documentation/swift)
 - [SwiftUI Documentation](https://developer.apple.com/documentation/swiftui/)
 - [Swift Testing Framework](https://developer.apple.com/documentation/testing)
 - [CONTRIBUTING.md](./CONTRIBUTING.md)
+- [OWASP AI Agent Security Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/AI_Agent_Security_Cheat_Sheet.html)
+- [GitHub Secret Scanning](https://docs.github.com/en/code-security/secret-scanning/about-secret-scanning)

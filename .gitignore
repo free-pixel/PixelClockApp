@@ -72,3 +72,7 @@ temp/
 secrets.json
 config/secrets.yml
 certificate.p12
+
+# Documentation submodules (managed separately to prevent public upload)
+docs/
+backup/
