@@ -44,8 +44,23 @@ class PopoverViewController: NSViewController {
             .environmentObject(appDelegate!)
         )
         
-        self.view = hostingController.view
+        let hostingView = hostingController.view
+        hostingView.translatesAutoresizingMaskIntoConstraints = false
+        
+        self.view = NSView(frame: .zero)
+        self.view.translatesAutoresizingMaskIntoConstraints = false
+        
+        self.view.addSubview(hostingView)
         self.addChild(hostingController)
+        
+        NSLayoutConstraint.activate([
+            hostingView.topAnchor.constraint(equalTo: self.view.topAnchor),
+            hostingView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            hostingView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            hostingView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
+            self.view.widthAnchor.constraint(equalToConstant: 530),
+            self.view.heightAnchor.constraint(equalToConstant: 570)
+        ])
     }
 }
 
