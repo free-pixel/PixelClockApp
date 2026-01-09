@@ -14,14 +14,10 @@ struct PixelClockApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .frame(width: 300, height: 720)
-                .fixedSize()
-                .environmentObject(appDelegate)
-                .background(VisualEffectView())
+            EmptyView()
         }
-        // Remove .windowStyle(.hiddenTitleBar)
-        .defaultSize(width: 300, height: 720)
+        .defaultSize(width: 0, height: 0)
+        .windowStyle(.hiddenTitleBar)
         .windowResizability(.contentSize)
         .commands {
             CommandGroup(replacing: .windowSize) { }
@@ -38,76 +34,96 @@ struct PixelClockApp: App {
     }
 }
 
-// 创建自定义窗口类来禁用关闭按钮
-class NonClosableWindow: NSWindow {
-    // 重写performClose方法，使其什么也不做
-    override func performClose(_ sender: Any?) {
-        // 不执行任何操作，这样点击关闭按钮不会有任何效果
+class PopoverViewController: NSViewController {
+    weak var appDelegate: AppDelegate?
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        let hostingController = NSHostingController(rootView: ContentView()
+            .environmentObject(appDelegate!)
+            .background(PopoverBackgroundView())
+        )
+        
+        self.view = hostingController.view
+        self.addChild(hostingController)
     }
+}
+
+// Popover 背景视图，实现 .ultraThinMaterial 和主题适配
+struct PopoverBackgroundView: NSViewRepresentable {
+    func makeNSView(context: Context) -> NSVisualEffectView {
+        let view = NSVisualEffectView()
+        
+        // 根据系统外观设置材质
+        let appearance = NSAppearance(named: NSApp.appearance?.name ?? .aqua)
+        view.appearance = appearance
+        
+        // 设置材质
+        if let appearanceName = NSApp.appearance?.name {
+            switch appearanceName {
+            case .darkAqua, .vibrantDark:
+                view.material = .titlebar
+            default:
+                view.material = .popover
+            }
+        } else {
+            view.material = .popover
+        }
+        
+        view.blendingMode = .behindWindow
+        view.state = .active
+        
+        return view
+    }
+    
+    func updateNSView(_ nsView: NSVisualEffectView, context: Context) {}
 }
 
 // 负责处理菜单栏初始化的 AppDelegate
 class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     @Published var menuBarController: MenuBarController?
-    var mainWindow: NSWindow?
-    private var windowDelegate: WindowDelegate?
+    var popover: NSPopover?
     
     func applicationDidFinishLaunching(_ notification: Notification) {
         print("AppDelegate: Initializing")
         
         DispatchQueue.main.async {
-            self.setupMainWindow()
+            self.setupPopover()
             self.menuBarController = MenuBarController(appDelegate: self)
             print("MenuBarController initialized")
-            self.mainWindow?.orderOut(nil)
         }
     }
 
-    private func setupMainWindow() {
-        // 使用我们的自定义窗口类
-        mainWindow = NonClosableWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 300, height: 720),
-            styleMask: [.titled, .miniaturizable, .closable],
-            backing: .buffered,
-            defer: false
-        )
+    private func setupPopover() {
+        popover = NSPopover()
         
-        if let window = mainWindow {
-            // 禁用关闭按钮，使其显示为灰色
-            window.standardWindowButton(.closeButton)?.isEnabled = false
-            
-            window.title = "PixelClock"
-            window.isReleasedWhenClosed = false
-            window.canHide = true
-            
-            let contentView = ContentView()
-                .environmentObject(self)
-            
-            window.contentView = NSHostingView(rootView: contentView)
-            window.center()
-            
-            windowDelegate = WindowDelegate()
-            window.delegate = windowDelegate
+        guard let popover = popover else { return }
+        
+        popover.contentSize = NSSize(width: 300, height: 720)
+        popover.behavior = .transient
+        popover.animates = true
+        
+        let contentViewController = PopoverViewController()
+        contentViewController.appDelegate = self
+        popover.contentViewController = contentViewController
+        
+        // 根据系统外观设置 Popover 的外观
+        popover.appearance = NSAppearance(named: .aqua)
+    }
+    
+    func showPopover() {
+        guard let popover = popover else { return }
+        
+        if popover.isShown {
+            popover.performClose(nil)
+        } else {
+            menuBarController?.showPopover()
         }
     }
     
-    // 添加一个空方法，用于关闭按钮的动作
-    @objc private func doNothing() {
-        // 什么也不做
-    }
-}
-
-// 窗口代理类确保窗口不能被关闭
-class WindowDelegate: NSObject, NSWindowDelegate {
-    func windowShouldClose(_ sender: NSWindow) -> Bool {
-        return false // 永远不允许窗口关闭
-    }
-    
-    func windowWillClose(_ notification: Notification) {
-        // 如果somehow窗口要关闭，改为最小化
-        if let window = notification.object as? NSWindow {
-            window.miniaturize(nil)
-        }
+    func hidePopover() {
+        popover?.performClose(nil)
     }
 }
 
@@ -205,38 +221,15 @@ class MenuBarController: NSObject {
     }
     
     @objc func showMainWindow() {
-        if let existingWindow = NSApplication.shared.windows.first {
-            NSApp.activate(ignoringOtherApps: true)
-            
-            if existingWindow.isMiniaturized {
-                // 只调用恢复，不再调用 makeKeyAndOrderFront
-                existingWindow.deminiaturize(nil)
-            } else if !existingWindow.isVisible {
-                // 如果窗口不可见才需要调用
-                existingWindow.makeKeyAndOrderFront(nil)
-            } else {
-                // 窗口已显示，只前置 App
-                existingWindow.orderFrontRegardless()
-            }
-            return
-        }
-        
-        guard let window = appDelegate?.mainWindow else {
-            print("Warning: Main window not found!")
-            return
-        }
-        
-        NSApp.activate(ignoringOtherApps: true)
-
-        if window.isMiniaturized {
-            window.deminiaturize(nil)
-        } else if !window.isVisible {
-            window.makeKeyAndOrderFront(nil)
-        } else {
-            window.orderFrontRegardless()
-        }
+        appDelegate?.showPopover()
     }
-
+    
+    func showPopover() {
+        guard let popover = appDelegate?.popover,
+              let button = statusItem.button else { return }
+        
+        popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
+    }
     
     @objc func quit() {
         NSApplication.shared.terminate(nil)
