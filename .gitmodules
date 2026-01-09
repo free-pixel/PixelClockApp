@@ -1,0 +1,3 @@
+[submodule "internal_docs"]
+	path = internal_docs
+	url = git@github.com:free-pixel/opensource-docs.git

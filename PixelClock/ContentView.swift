@@ -8,19 +8,76 @@
 import SwiftUI
 import AppKit
 import AVFoundation
+import os
+import Foundation
+
+let logger = OSLog(subsystem: "com.rockstonegame.PixelClock", category: "ThemeDebug")
+
+func debugLog(_ message: String) {
+    let logDir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    let logFile = logDir.appendingPathComponent("pixelclock_debug.log")
+    
+    let timestamp = DateFormatter().string(from: Date())
+    let logLine = "[\(timestamp)] [ContentView] \(message)\n"
+    
+    if let data = logLine.data(using: .utf8) {
+        if FileManager.default.fileExists(atPath: logFile.path) {
+            if let handle = try? FileHandle(forWritingTo: logFile) {
+                handle.seekToEndOfFile()
+                handle.write(data)
+                handle.closeFile()
+            }
+        } else {
+            try? data.write(to: logFile)
+        }
+    }
+    print(message)
+}
+
+struct VisualEffectView: NSViewRepresentable {
+    func makeNSView(context: Context) -> NSVisualEffectView {
+        let view = NSVisualEffectView()
+        view.blendingMode = .behindWindow
+        view.state = .active
+        view.material = .popover
+        return view
+    }
+    
+    func updateNSView(_ nsView: NSVisualEffectView, context: Context) {}
+}
+
+extension Color {
+    init(hex: String) {
+        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var int: UInt64 = 0
+        Scanner(string: hex).scanHexInt64(&int)
+        let a, r, g, b: UInt64
+        switch hex.count {
+        case 3:
+            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
+        case 6:
+            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
+        case 8:
+            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
+        default:
+            (a, r, g, b) = (1, 1, 1, 0)
+        }
+        
+        self.init(
+            .sRGB,
+            red: Double(r) / 255,
+            green: Double(g) / 255,
+            blue:  Double(b) / 255,
+            opacity: 1.0
+        )
+    }
+}
 
 struct ContentView: View {
-    @State private var timerValue: Double = 25 * 60 // 25分钟转换为秒
-    @State private var taskDuration: Double = 25 // 分钟
-    @State private var breakDuration: Double = 5 // 分钟
-    @State private var longBreakDuration: Double = 15 // 分钟
-    @State private var timerRunning = false
+    @StateObject private var viewModel = TimerViewModel()
     @State private var timer: Timer? = nil
-    @State private var currentState = "Task" // "Task", "Break", "Long Break"
-    @State private var completedTasks: Int = 0 // 跟踪完成的任务数
     @State private var volume: Double = 0.5 {
         didSet {
-            // 如果当前正在播放声音，实时更新音量
             if let player = Self.player {
                 player.volume = Float(volume)
             }
@@ -29,194 +86,231 @@ struct ContentView: View {
     @State private var soundEnabled = true
     @State private var soundTimer: Timer? = nil
     private static var player: NSSound?
-    @EnvironmentObject var appDelegate: AppDelegate // Add this line
+    @EnvironmentObject var appDelegate: AppDelegate
+    @Environment(\.colorScheme) var colorScheme
+    @State private var isDebugDarkMode = false
+    @FocusState private var startButtonFocused: Bool
+
+    private let goldColor = Color(red: 1, green: 215/255, blue: 0)  // Bright gold
+
+    private func formatTime(_ seconds: Double) -> String {
+        let minutes = Int(seconds) / 60
+        let secs = Int(seconds) % 60
+        return String(format: "%d:%02d", minutes, secs)
+    }
 
     var body: some View {
-        VStack {
-            Text("🍅番茄计时器🍅")
-                .font(.largeTitle)
-                .padding()
+        let _ = debugLog("=== ContentView.body called ===")
+        let _ = debugLog("colorScheme: \(colorScheme)")
+        let _ = debugLog("isDebugDarkMode: \(isDebugDarkMode)")
+        let _ = debugLog("Effective theme: \(isDebugDarkMode ? "Dark (Debug)" : (colorScheme == .dark ? "Dark" : "Light"))")
+        
+        VStack(spacing: 40) {
+            PillTabSwitcher(selectedState: $viewModel.currentState)
 
-            Text(currentState)
-                .font(.title)
-                .foregroundColor(currentState == "Task" ? .green : currentState == "Break" ? .blue : .orange)
-                .padding()
+            Text(stateText(for: viewModel.currentState))
+                .font(.system(size: 18, weight: .medium))
+                .foregroundColor(stateColor(for: viewModel.currentState))
+                .contentTransition(.opacity)
 
-            // Display format changed to minutes:seconds
-            Text("\(Int(timerValue) / 60):\(String(format: "%02d", Int(timerValue) % 60))")
-                .font(.system(size: 40))
-                .padding()
+            Text(formatTime(viewModel.timerValue))
+                .font(.system(size: 72, weight: .regular, design: .monospaced))
+                .fontDesign(.rounded)
+                .contentTransition(.numericText(countsDown: true))
+                .foregroundColor(colorScheme == .dark ? goldColor : .primary)
 
-            // Add completed tasks counter display
-            Text("Completed Tasks: \(completedTasks)")
-                .font(.subheadline)
-                .foregroundColor(.gray)
-                .padding()
+            Text("Completed Tasks: \(viewModel.completedTasks)")
+                .font(.system(size: 14))
+                .foregroundColor(.secondary)
 
-            HStack(spacing: 20) { // 添加间距
+            HStack(spacing: 20) {
                 Button(action: startPauseTimer) {
-                    Text(timerRunning ? "Pause" : "Start")
-                        .frame(width: 80) // 固定宽度
-                        .padding(.vertical, 8) // 只添加垂直方向的内边距
+                    Text(viewModel.timerRunning ? "Pause" : "Start")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundColor(colorScheme == .dark ? goldColor : .primary)
+                        .frame(width: 120, height: 50)
+                        .background(
+                            Capsule()
+                                .fill(Color.blue)
+                        )
                 }
-                .buttonStyle(CustomButtonStyle(color: .blue))
-                .focusable(false) // 禁用焦点
-                .contentShape(Rectangle()) // 确保点击区域正确
-                
+                .buttonStyle(PlainButtonStyle())
+                .keyboardShortcut(.defaultAction)
+                .focused($startButtonFocused)
+
                 Button(action: stopTimer) {
                     Text("Stop")
-                        .frame(width: 80) // 固定宽度
-                        .padding(.vertical, 8) // 只添加垂直方向的内边距
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundColor(colorScheme == .dark ? goldColor : .primary)
+                        .frame(width: 120, height: 50)
+                        .background(
+                            Capsule()
+                                .fill(Color.red)
+                        )
                 }
-                .buttonStyle(CustomButtonStyle(color: .red))
-                .focusable(false) // 禁用焦点
-                .contentShape(Rectangle())
-            }
-            .padding(.vertical) // 为按钮组添加垂直间距
-
-            VStack {
-                Text("Task Duration: \(Int(taskDuration)) min")
-                Slider(value: $taskDuration, in: 1...60, step: 1)
-                    .padding()
-                    .disabled(timerRunning)
-                    .focusable(false)
-                    .onChange(of: taskDuration) { newValue in
-                        if currentState == "Task" && !timerRunning {
-                            DispatchQueue.main.async {
-                                timerValue = newValue * 60
-                            }
-                        }
-                    }
-
-                Text("Break Duration: \(Int(breakDuration)) min")
-                Slider(value: $breakDuration, in: 1...30, step: 1)
-                    .padding()
-                    .disabled(timerRunning)
-                    .focusable(false)
-                    .onChange(of: breakDuration) { newValue in
-                        if currentState == "Break" && !timerRunning {
-                            DispatchQueue.main.async {
-                                timerValue = newValue * 60
-                            }
-                        }
-                    }
-
-                Text("Long Break Duration: \(Int(longBreakDuration)) min")
-                Slider(value: $longBreakDuration, in: 5...30, step: 1)
-                    .padding()
-                    .disabled(timerRunning)
-                    .focusable(false)
-                    .onChange(of: longBreakDuration) { newValue in
-                        if currentState == "Long Break" && !timerRunning {
-                            DispatchQueue.main.async {
-                                timerValue = newValue * 60
-                            }
-                        }
-                    }
+                .buttonStyle(PlainButtonStyle())
             }
 
-            VStack {
+            Spacer()
+
+            VStack(spacing: 15) {
                 Toggle(isOn: $soundEnabled) {
                     Text("Enable Sound")
                 }
-                .padding()
+                .toggleStyle(SwitchToggleStyle())
 
-                Text("Volume: \(Int(volume * 100))%")  // 添加音量百分比显示
-                Slider(value: $volume, in: 0...1, step: 0.01)
-                    .padding()
+                if soundEnabled {
+                    HStack {
+                        Text("Volume")
+                        Slider(value: $volume, in: 0...1, step: 0.01)
+                            .frame(maxWidth: 150)
+                        Text("\(Int(volume * 100))%")
+                            .font(.system(size: 12))
+                            .frame(width: 30)
+                    }
+                }
+
+                Button(action: {
+                    isDebugDarkMode.toggle()
+                    print("Debug button clicked! isDebugDarkMode: \(isDebugDarkMode)")
+                }) {
+                    VStack(spacing: 2) {
+                        Text("System: \(colorScheme == .dark ? "Dark" : "Light")")
+                            .font(.system(size: 10, weight: .medium))
+                            .foregroundColor(.white)
+                        Text("Debug: \(isDebugDarkMode ? "ON" : "OFF")")
+                            .font(.system(size: 10))
+                            .foregroundColor(.yellow)
+                        Text("Effect: \(isDebugDarkMode ? "Dark (Debug)" : (colorScheme == .dark ? "Dark" : "Light"))")
+                            .font(.system(size: 10, weight: .bold))
+                            .foregroundColor(.white)
+                    }
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 5)
+                    .background(Color.gray.opacity(0.8))
+                    .cornerRadius(5)
+                }
+                .buttonStyle(PlainButtonStyle())
+            }
+            .padding(.bottom, 20)
+        }
+        .padding(.horizontal, 40)
+        .padding(.vertical, 50)
+        .background(Color.black.opacity(0.85))
+        .ignoresSafeArea()
+        .onChange(of: colorScheme) { newValue in
+            debugLog("colorScheme changed: \(newValue)")
+            if let menuBarController = appDelegate.menuBarController {
+                menuBarController.updateTheme(isDark: newValue == .dark)
             }
         }
-        .padding()
-        .background(WindowAccessor())
+        .onAppear {
+            debugLog("ContentView.onAppear - Initial state:")
+            debugLog("  colorScheme: \(colorScheme)")
+            debugLog("  isDebugDarkMode: \(isDebugDarkMode)")
+            startButtonFocused = true
+            if let menuBarController = appDelegate.menuBarController {
+                menuBarController.updateTheme(isDark: colorScheme == .dark)
+            }
+        }
+    }
+
+    private func stateText(for state: TimerState) -> String {
+        switch state {
+        case .task:
+            return "Focus Time"
+        case .break:
+            return "Short Break"
+        case .longBreak:
+            return "Long Break"
+        }
+    }
+
+    private func stateColor(for state: TimerState) -> Color {
+        switch state {
+        case .task:
+            return .green
+        case .break:
+            return .blue
+        case .longBreak:
+            return .orange
+        }
     }
 
     func startPauseTimer() {
-        stopSound() // 确保停止声音
-        if timerRunning {
+        stopSound()
+        if viewModel.timerRunning {
             timer?.invalidate()
             timer = nil
         } else {
-            let totalTime = timerValue
-            updateMenuBarProgress(totalTime: totalTime, remainingTime: timerValue)
+            let totalTime = viewModel.timerValue
+            updateMenuBarProgress(totalTime: totalTime, remainingTime: viewModel.timerValue)
             
-            timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
-                if self.timerValue > 0 {
-                    self.timerValue -= 1
-                    self.updateMenuBarProgress(totalTime: totalTime, remainingTime: self.timerValue)
+            timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+                if viewModel.timerValue > 0 {
+                    viewModel.timerValue -= 1
+                    updateMenuBarProgress(totalTime: totalTime, remainingTime: viewModel.timerValue)
                 } else {
-                    timer.invalidate()
-                    self.timer = nil
-                    if self.soundEnabled {
-                        self.playSound() // 时间到时播放声音
+                    timer?.invalidate()
+                    timer = nil
+                    if soundEnabled {
+                        playSound()
                     }
-                    self.updateMenuBarProgress(totalTime: totalTime, remainingTime: 0)
-                    self.updateState()
+                    updateMenuBarProgress(totalTime: totalTime, remainingTime: 0)
+                    updateState()
                 }
             }
             
-            // 确保计时器在主运行循环中运行
             RunLoop.main.add(timer!, forMode: .common)
         }
-        timerRunning.toggle()
+        viewModel.timerRunning.toggle()
     }
 
     func stopTimer() {
-        stopSound() // Make sure to stop the sound
+        stopSound()
         timer?.invalidate()
         timer = nil
-        timerRunning = false
-        completedTasks = 0
-        currentState = "Task"
-        timerValue = taskDuration * 60  // Convert to seconds
-        
+        viewModel.timerRunning = false
+        viewModel.completedTasks = 0
+        viewModel.switchTo(.task)
         updateMenuBarProgress(totalTime: 1, remainingTime: 1)
     }
 
     func updateState() {
-        if currentState == "Task" {
-            completedTasks += 1
-            if completedTasks >= 4 {
-                currentState = "Long Break"
-                timerValue = longBreakDuration * 60  // 转换为秒
-                completedTasks = 0
+        if viewModel.currentState == .task {
+            viewModel.completedTasks += 1
+            if viewModel.completedTasks >= 4 {
+                viewModel.switchTo(.longBreak)
+                viewModel.completedTasks = 0
             } else {
-                currentState = "Break"
-                timerValue = breakDuration * 60  // 转换为秒
+                viewModel.switchTo(.break)
             }
-        } else if currentState == "Break" {
-            currentState = "Task"
-            timerValue = taskDuration * 60  // 转换为秒
         } else {
-            currentState = "Task"
-            timerValue = taskDuration * 60  // 转换为秒
+            viewModel.switchTo(.task)
         }
-        timerRunning = false
+        viewModel.timerRunning = false
     }
 
     func playSound() {
         if soundEnabled {
             stopSound()
             
-            // 尝试加载自定义声音
             if let soundURL = Bundle.main.url(forResource: "alert", withExtension: "wav"),
                let sound = NSSound(contentsOf: soundURL, byReference: true) {
-                sound.volume = Float(volume)  // 使用当前音量设置
+                sound.volume = Float(volume)
                 Self.player = sound
                 Self.player?.play()
                 
-                // 创建重复播放的计时器
                 soundTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
-                    Self.player?.stop()  // 先停止当前播放
-                    Self.player?.volume = Float(volume)  // 更新音量
-                    Self.player?.play()  // 重新播放
+                    Self.player?.stop()
+                    Self.player?.volume = Float(volume)
+                    Self.player?.play()
                 }
                 
-                // 确保计时器在主运行循环中运行
                 if let timer = soundTimer {
                     RunLoop.main.add(timer, forMode: .common)
                 }
             } else {
-                // 如果找不到自定义声音，使用系统声音
                 fallbackBeep()
             }
         }
@@ -226,7 +320,7 @@ struct ContentView: View {
         NSSound.beep()
         soundTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
             if let systemSound = NSSound(named: NSSound.Name("Tink")) {
-                systemSound.volume = Float(volume)  // 设置系统声音的音量
+                systemSound.volume = Float(volume)
                 systemSound.play()
             } else {
                 NSSound.beep()
@@ -244,47 +338,58 @@ struct ContentView: View {
         Self.player = nil
     }
 
-    // 新增辅助方法
     private func updateMenuBarProgress(totalTime: Double, remainingTime: Double) {
-        print("ContentView updating progress: total=\(totalTime), remaining=\(remainingTime)")
         if let menuBarController = appDelegate.menuBarController {
             menuBarController.updateProgress(totalTime: totalTime, remainingTime: remainingTime)
-        } else {
-            print("MenuBarController not found in AppDelegate!")
         }
     }
 }
 
-// 在 ContentView 外部添加自定义按钮样式
-struct CustomButtonStyle: ButtonStyle {
-    let color: Color
-    
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .foregroundColor(.white)
-            .background(color.opacity(configuration.isPressed ? 0.7 : 1.0))
-            .cornerRadius(8)
-            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
-            .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
-    }
-}
+struct PillTabSwitcher: View {
+    @Binding var selectedState: TimerState
 
-// 新增一个专门处理声音的类
-class SoundPlayer {
-    func play(volume: Float) {
-        DispatchQueue.main.async {
-            if let sound = NSSound(named: NSSound.Name("Tink")) {
-                sound.volume = volume
-                sound.play()
-            } else {
-                NSSound.beep()
-            }
+    var body: some View {
+        HStack(spacing: 8) {
+            PillButton(title: "25m", state: .task, selectedState: $selectedState)
+            PillButton(title: "5m", state: .break, selectedState: $selectedState)
+            PillButton(title: "15m", state: .longBreak, selectedState: $selectedState)
         }
+        .padding(8)
+        .background(
+            Capsule()
+                .fill(Color.primary.opacity(0.1))
+        )
     }
 }
 
-// 预览支持
+struct PillButton: View {
+    let title: String
+    let state: TimerState
+    @Binding var selectedState: TimerState
+
+    var body: some View {
+        Button(action: {
+            selectedState = state
+        }) {
+            Text(title)
+                .font(.system(size: 14, weight: .medium))
+                .foregroundColor(isSelected ? .white : .primary)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 8)
+                .background(
+                    Capsule()
+                        .fill(isSelected ? Color.blue : Color.clear)
+                )
+        }
+        .buttonStyle(PlainButtonStyle())
+    }
+
+    private var isSelected: Bool {
+        selectedState == state
+    }
+}
+
 #Preview {
     ContentView()
-        .environmentObject(AppDelegate()) // Add this line to support preview
+        .environmentObject(AppDelegate())
 }
