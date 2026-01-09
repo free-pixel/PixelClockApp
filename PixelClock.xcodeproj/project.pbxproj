@@ -12,7 +12,6 @@
 		D7ECB285B87C4520831C2945 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E92C37C2A3A4C6FBBDD837A /* ContentView.swift */; };
 		E1EE8E1C10D34996BAD2C613 /* Resources/alert.wav in Resources */ = {isa = PBXBuildFile; fileRef = AE790ECCA04E4300A39C17FC /* Resources/alert.wav */; };
 		E49E7550C5174DA9918A4598 /* WindowAccessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26D6FDFBA9E4A8ABA71D520 /* WindowAccessor.swift */; };
-		71E13936D00D4D9FB8545110 /* TimerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02239203412544BB918CA97B /* TimerViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,7 +30,6 @@
 		973448CA3A8F479FA3CF98BE /* PixelClockApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelClockApp.swift; sourceTree = "<group>"; };
 		AE790ECCA04E4300A39C17FC /* Resources/alert.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = Resources/alert.wav; sourceTree = "<group>"; };
 		B26D6FDFBA9E4A8ABA71D520 /* WindowAccessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowAccessor.swift; sourceTree = "<group>"; };
-		02239203412544BB918CA97B /* TimerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimerViewModel.swift; sourceTree = "<group>"; };
 		CA5F44CE4498498FA6A4D0E1 /* PixelClock.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PixelClock.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA887E874D5745E89B5A08F8 /* PixelClockTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelClockTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -69,7 +67,6 @@
 				973448CA3A8F479FA3CF98BE /* PixelClockApp.swift */,
 				6E92C37C2A3A4C6FBBDD837A /* ContentView.swift */,
 				B26D6FDFBA9E4A8ABA71D520 /* WindowAccessor.swift */,
-				02239203412544BB918CA97B /* TimerViewModel.swift */,
 				AE790ECCA04E4300A39C17FC /* Resources/alert.wav */,
 			);
 			path = PixelClock;
@@ -193,7 +190,6 @@
 				01DE3D91F36E49DB85636DF6 /* PixelClockApp.swift in Sources */,
 				D7ECB285B87C4520831C2945 /* ContentView.swift in Sources */,
 				E49E7550C5174DA9918A4598 /* WindowAccessor.swift in Sources */,
-				71E13936D00D4D9FB8545110 /* TimerViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
