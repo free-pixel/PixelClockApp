@@ -7,6 +7,31 @@
 
 import SwiftUI
 import AppKit
+import os
+import Foundation
+
+let appLogger = OSLog(subsystem: "com.rockstonegame.PixelClock", category: "AppDelegate")
+
+func logToFile(_ message: String) {
+    let logDir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    let logFile = logDir.appendingPathComponent("pixelclock_debug.log")
+    
+    let timestamp = DateFormatter().string(from: Date())
+    let logLine = "[\(timestamp)] \(message)\n"
+    
+    if let data = logLine.data(using: .utf8) {
+        if FileManager.default.fileExists(atPath: logFile.path) {
+            if let handle = try? FileHandle(forWritingTo: logFile) {
+                handle.seekToEndOfFile()
+                handle.write(data)
+                handle.closeFile()
+            }
+        } else {
+            try? data.write(to: logFile)
+        }
+    }
+    print(message)
+}
 
 @main
 struct PixelClockApp: App {
@@ -14,22 +39,18 @@ struct PixelClockApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .frame(width: 300, height: 720)
-                .fixedSize()
-                .environmentObject(appDelegate)
-                .background(VisualEffectView())
+            EmptyView()
         }
-        // Remove .windowStyle(.hiddenTitleBar)
-        .defaultSize(width: 300, height: 720)
+        .defaultSize(width: 0, height: 0)
+        .windowStyle(.hiddenTitleBar)
         .windowResizability(.contentSize)
         .commands {
             CommandGroup(replacing: .windowSize) { }
             CommandGroup(replacing: .windowList) { }
             CommandGroup(replacing: .systemServices) {
                 Button("Minimize") {
-                    if let window = NSApplication.shared.windows.first {
-                        window.miniaturize(nil)
+                    if let appDelegate = NSApplication.shared.delegate as? AppDelegate {
+                        appDelegate.hidePopover()
                     }
                 }
                 .keyboardShortcut("w", modifiers: .command)
@@ -38,76 +59,87 @@ struct PixelClockApp: App {
     }
 }
 
-// 创建自定义窗口类来禁用关闭按钮
-class NonClosableWindow: NSWindow {
-    // 重写performClose方法，使其什么也不做
-    override func performClose(_ sender: Any?) {
-        // 不执行任何操作，这样点击关闭按钮不会有任何效果
+class PopoverViewController: NSViewController {
+    weak var appDelegate: AppDelegate?
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        logToFile("=== PopoverViewController.viewDidLoad ===")
+        logToFile("NSApp.effectiveAppearance: \(NSApp.effectiveAppearance.name.rawValue)")
+        logToFile("view.window?.effectiveAppearance: \(view.window?.effectiveAppearance.name.rawValue ?? "nil")")
+        
+        let hostingController = NSHostingController(rootView: ContentView()
+            .environmentObject(appDelegate!)
+        )
+        
+        let hostingView = hostingController.view
+        hostingView.translatesAutoresizingMaskIntoConstraints = false
+        
+        self.view = NSView(frame: .zero)
+        self.view.translatesAutoresizingMaskIntoConstraints = false
+        
+        self.view.addSubview(hostingView)
+        self.addChild(hostingController)
+        
+        NSLayoutConstraint.activate([
+            hostingView.topAnchor.constraint(equalTo: self.view.topAnchor),
+            hostingView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor),
+            hostingView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor),
+            hostingView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor),
+            self.view.widthAnchor.constraint(equalToConstant: 530),
+            self.view.heightAnchor.constraint(equalToConstant: 570)
+        ])
     }
 }
 
 // 负责处理菜单栏初始化的 AppDelegate
 class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     @Published var menuBarController: MenuBarController?
-    var mainWindow: NSWindow?
-    private var windowDelegate: WindowDelegate?
+    var popover: NSPopover?
     
     func applicationDidFinishLaunching(_ notification: Notification) {
         print("AppDelegate: Initializing")
         
         DispatchQueue.main.async {
-            self.setupMainWindow()
+            self.setupPopover()
             self.menuBarController = MenuBarController(appDelegate: self)
             print("MenuBarController initialized")
-            self.mainWindow?.orderOut(nil)
         }
     }
 
-    private func setupMainWindow() {
-        // 使用我们的自定义窗口类
-        mainWindow = NonClosableWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 300, height: 720),
-            styleMask: [.titled, .miniaturizable, .closable],
-            backing: .buffered,
-            defer: false
-        )
+    private func setupPopover() {
+        popover = NSPopover()
+
+        guard let popover = popover else { return }
+
+        popover.contentSize = NSSize(width: 530, height: 570)
+        popover.behavior = .transient
+        popover.animates = true
+
+        // Set appearance based on current system theme
+        if NSApp.effectiveAppearance.name == .darkAqua {
+            popover.appearance = NSAppearance(named: .darkAqua)
+        } else {
+            popover.appearance = NSAppearance(named: .aqua)
+        }
+
+        let contentViewController = PopoverViewController()
+        contentViewController.appDelegate = self
+        popover.contentViewController = contentViewController
+    }
+    
+    func showPopover() {
+        guard let popover = popover else { return }
         
-        if let window = mainWindow {
-            // 禁用关闭按钮，使其显示为灰色
-            window.standardWindowButton(.closeButton)?.isEnabled = false
-            
-            window.title = "PixelClock"
-            window.isReleasedWhenClosed = false
-            window.canHide = true
-            
-            let contentView = ContentView()
-                .environmentObject(self)
-            
-            window.contentView = NSHostingView(rootView: contentView)
-            window.center()
-            
-            windowDelegate = WindowDelegate()
-            window.delegate = windowDelegate
+        if popover.isShown {
+            popover.performClose(nil)
+        } else {
+            menuBarController?.showPopover()
         }
     }
     
-    // 添加一个空方法，用于关闭按钮的动作
-    @objc private func doNothing() {
-        // 什么也不做
-    }
-}
-
-// 窗口代理类确保窗口不能被关闭
-class WindowDelegate: NSObject, NSWindowDelegate {
-    func windowShouldClose(_ sender: NSWindow) -> Bool {
-        return false // 永远不允许窗口关闭
-    }
-    
-    func windowWillClose(_ notification: Notification) {
-        // 如果somehow窗口要关闭，改为最小化
-        if let window = notification.object as? NSWindow {
-            window.miniaturize(nil)
-        }
+    func hidePopover() {
+        popover?.performClose(nil)
     }
 }
 
@@ -116,6 +148,7 @@ class MenuBarController: NSObject {
     private var currentProgress: Double = 0
     private var rightClickMenu: NSMenu
     private weak var appDelegate: AppDelegate?
+    private var isDarkMode: Bool = false
     
     init(appDelegate: AppDelegate) {
         self.appDelegate = appDelegate
@@ -177,9 +210,20 @@ class MenuBarController: NSObject {
             progressPath.appendArc(withCenter: center,
                                  radius: radius,
                                  startAngle: 90,
-                                 endAngle: 90 - (360 * CGFloat(currentProgress)),
+                                  endAngle: 90 - (360 * CGFloat(currentProgress)),
                                  clockwise: true)
-            NSColor.red.setStroke()
+            let progressColor: NSColor
+            if isDarkMode {
+                progressColor = NSColor(
+                    red: 0.831,
+                    green: 0.686,
+                    blue: 0.215,
+                    alpha: 1.0
+                )
+            } else {
+                progressColor = NSColor.systemBlue
+            }
+            progressColor.setStroke()
             progressPath.stroke()
         }
         
@@ -190,6 +234,11 @@ class MenuBarController: NSObject {
         
         // 更新状态栏图标
         statusItem.button?.image = image
+    }
+    
+    func updateTheme(isDark: Bool) {
+        isDarkMode = isDark
+        drawProgress()
     }
     
     @objc private func handleButtonClick(_ sender: Any?) {
@@ -205,38 +254,15 @@ class MenuBarController: NSObject {
     }
     
     @objc func showMainWindow() {
-        if let existingWindow = NSApplication.shared.windows.first {
-            NSApp.activate(ignoringOtherApps: true)
-            
-            if existingWindow.isMiniaturized {
-                // 只调用恢复，不再调用 makeKeyAndOrderFront
-                existingWindow.deminiaturize(nil)
-            } else if !existingWindow.isVisible {
-                // 如果窗口不可见才需要调用
-                existingWindow.makeKeyAndOrderFront(nil)
-            } else {
-                // 窗口已显示，只前置 App
-                existingWindow.orderFrontRegardless()
-            }
-            return
-        }
-        
-        guard let window = appDelegate?.mainWindow else {
-            print("Warning: Main window not found!")
-            return
-        }
-        
-        NSApp.activate(ignoringOtherApps: true)
-
-        if window.isMiniaturized {
-            window.deminiaturize(nil)
-        } else if !window.isVisible {
-            window.makeKeyAndOrderFront(nil)
-        } else {
-            window.orderFrontRegardless()
-        }
+        appDelegate?.showPopover()
     }
-
+    
+    func showPopover() {
+        guard let popover = appDelegate?.popover,
+              let button = statusItem.button else { return }
+        
+        popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
+    }
     
     @objc func quit() {
         NSApplication.shared.terminate(nil)
@@ -273,17 +299,4 @@ struct SettingsView: View {
         }
         .padding()
     }
-}
-
-// 添加毛玻璃效果背景
-struct VisualEffectView: NSViewRepresentable {
-    func makeNSView(context: Context) -> NSVisualEffectView {
-        let view = NSVisualEffectView()
-        view.blendingMode = .behindWindow
-        view.state = .active
-        view.material = .windowBackground
-        return view
-    }
-    
-    func updateNSView(_ nsView: NSVisualEffectView, context: Context) {}
 }
