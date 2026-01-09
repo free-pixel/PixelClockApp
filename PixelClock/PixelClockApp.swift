@@ -92,10 +92,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         contentViewController.appDelegate = self
         popover.contentViewController = contentViewController
         
-        // 根据系统外观设置 Popover 的外观
-        let appearanceName = NSApp.effectiveAppearance.name
-        popover.appearance = NSAppearance(named: appearanceName)
-        
         // 监听系统主题切换
         DistributedNotificationCenter.default().addObserver(
             forName: NSNotification.Name("AppleInterfaceThemeChangedNotification"),
