@@ -42,42 +42,11 @@ class PopoverViewController: NSViewController {
         
         let hostingController = NSHostingController(rootView: ContentView()
             .environmentObject(appDelegate!)
-            .background(PopoverBackgroundView())
         )
         
         self.view = hostingController.view
         self.addChild(hostingController)
     }
-}
-
-// Popover 背景视图，实现 .ultraThinMaterial 和主题适配
-struct PopoverBackgroundView: NSViewRepresentable {
-    func makeNSView(context: Context) -> NSVisualEffectView {
-        let view = NSVisualEffectView()
-        
-        // 根据系统外观设置材质
-        let appearance = NSAppearance(named: NSApp.appearance?.name ?? .aqua)
-        view.appearance = appearance
-        
-        // 设置材质
-        if let appearanceName = NSApp.appearance?.name {
-            switch appearanceName {
-            case .darkAqua, .vibrantDark:
-                view.material = .titlebar
-            default:
-                view.material = .popover
-            }
-        } else {
-            view.material = .popover
-        }
-        
-        view.blendingMode = .behindWindow
-        view.state = .active
-        
-        return view
-    }
-    
-    func updateNSView(_ nsView: NSVisualEffectView, context: Context) {}
 }
 
 // 负责处理菜单栏初始化的 AppDelegate
@@ -109,7 +78,18 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         popover.contentViewController = contentViewController
         
         // 根据系统外观设置 Popover 的外观
-        popover.appearance = NSAppearance(named: .aqua)
+        let appearanceName = NSApp.effectiveAppearance.name
+        popover.appearance = NSAppearance(named: appearanceName)
+        
+        // 监听系统主题切换
+        DistributedNotificationCenter.default().addObserver(
+            forName: NSNotification.Name("AppleInterfaceThemeChangedNotification"),
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            let newAppearance = NSApp.effectiveAppearance.name
+            self?.popover?.appearance = NSAppearance(named: newAppearance)
+        }
     }
     
     func showPopover() {
@@ -266,17 +246,4 @@ struct SettingsView: View {
         }
         .padding()
     }
-}
-
-// 添加毛玻璃效果背景
-struct VisualEffectView: NSViewRepresentable {
-    func makeNSView(context: Context) -> NSVisualEffectView {
-        let view = NSVisualEffectView()
-        view.blendingMode = .behindWindow
-        view.state = .active
-        view.material = .windowBackground
-        return view
-    }
-    
-    func updateNSView(_ nsView: NSVisualEffectView, context: Context) {}
 }
