@@ -69,7 +69,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         
         guard let popover = popover else { return }
         
-        popover.contentSize = NSSize(width: 300, height: 720)
+        popover.contentSize = NSSize(width: 530, height: 570)
         popover.behavior = .transient
         popover.animates = true
         

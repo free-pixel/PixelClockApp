@@ -75,7 +75,7 @@ struct ContentView: View {
     }
 
     var body: some View {
-        VStack(spacing: 30) {
+        VStack(spacing: 40) {
             PillTabSwitcher(selectedState: $viewModel.currentState)
 
             Text(stateText(for: viewModel.currentState))
@@ -110,10 +110,10 @@ struct ContentView: View {
                     Text(viewModel.timerRunning ? "Pause" : "Start")
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundColor(colorScheme == .dark ? goldColor : .white)
-                        .frame(width: 100, height: 44)
+                        .frame(width: 120, height: 50)
                         .background(
                             Capsule()
-                                .fill(colorScheme == .dark ? Color.black.opacity(0.8) : Color.blue)
+                                .fill(colorScheme == .dark ? Color.black : Color.blue)
                                 .overlay(
                                     Capsule()
                                         .stroke(colorScheme == .dark ? goldColor : .clear, lineWidth: 2)
@@ -128,10 +128,10 @@ struct ContentView: View {
                     Text("Stop")
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundColor(colorScheme == .dark ? goldColor : .white)
-                        .frame(width: 100, height: 44)
+                        .frame(width: 120, height: 50)
                         .background(
                             Capsule()
-                                .fill(colorScheme == .dark ? Color.black.opacity(0.8) : Color.red)
+                                .fill(colorScheme == .dark ? Color.black : Color.red)
                                 .overlay(
                                     Capsule()
                                         .stroke(colorScheme == .dark ? goldColor : .clear, lineWidth: 2)
@@ -174,12 +174,14 @@ struct ContentView: View {
             }
             .padding(.bottom, 20)
         }
-        .padding(.horizontal, 30)
-        .padding(.vertical, 40)
+        .padding(.horizontal, 40)
+        .padding(.vertical, 50)
         .background(
             ZStack {
                 if colorScheme == .dark || isDebugDarkMode {
-                    Color.black.opacity(0.7)
+                    Color.black.opacity(0.85)
+                } else {
+                    Color.blue.opacity(0.05)
                 }
                 VisualEffectView()
             }
