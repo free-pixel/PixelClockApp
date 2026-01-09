@@ -73,6 +73,9 @@ secrets.json
 config/secrets.yml
 certificate.p12
 
+# Sensitive or removed files
+AGENTS.md
+
 # Documentation submodules (managed separately to prevent public upload)
 docs/
 backup/
