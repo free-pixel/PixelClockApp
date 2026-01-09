@@ -59,3 +59,20 @@ temp/
 # Archive files
 *.zip
 *.dmg
+
+# Sensitive files and secrets (added for security)
+*.env
+*.key
+*.p12
+*.pfx
+*.cer
+*.crt
+*.pem
+*.keychain
+secrets.json
+config/secrets.yml
+certificate.p12
+
+# Documentation submodules (managed separately to prevent public upload)
+docs/
+backup/
