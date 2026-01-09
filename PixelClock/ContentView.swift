@@ -64,6 +64,7 @@ struct ContentView: View {
     @EnvironmentObject var appDelegate: AppDelegate
     @Environment(\.colorScheme) var colorScheme
     @State private var isDebugDarkMode = false
+    @FocusState private var startButtonFocused: Bool
 
     private let goldColor = Color(hex: "0xD4AF37")
 
@@ -121,6 +122,7 @@ struct ContentView: View {
                 }
                 .buttonStyle(PlainButtonStyle())
                 .keyboardShortcut(.defaultAction)
+                .focused($startButtonFocused)
 
                 Button(action: stopTimer) {
                     Text("Stop")
@@ -183,6 +185,17 @@ struct ContentView: View {
             }
         )
         .ignoresSafeArea()
+        .onChange(of: colorScheme) { newValue in
+            if let menuBarController = appDelegate.menuBarController {
+                menuBarController.updateTheme(isDark: newValue == .dark)
+            }
+        }
+        .onAppear {
+            startButtonFocused = true
+            if let menuBarController = appDelegate.menuBarController {
+                menuBarController.updateTheme(isDark: colorScheme == .dark)
+            }
+        }
     }
 
     private func stateText(for state: TimerState) -> String {
