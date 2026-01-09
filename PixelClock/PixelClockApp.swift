@@ -24,8 +24,8 @@ struct PixelClockApp: App {
             CommandGroup(replacing: .windowList) { }
             CommandGroup(replacing: .systemServices) {
                 Button("Minimize") {
-                    if let window = NSApplication.shared.windows.first {
-                        window.miniaturize(nil)
+                    if let appDelegate = NSApplication.shared.delegate as? AppDelegate {
+                        appDelegate.hidePopover()
                     }
                 }
                 .keyboardShortcut("w", modifiers: .command)
@@ -112,6 +112,7 @@ class MenuBarController: NSObject {
     private var currentProgress: Double = 0
     private var rightClickMenu: NSMenu
     private weak var appDelegate: AppDelegate?
+    private var isDarkMode: Bool = false
     
     init(appDelegate: AppDelegate) {
         self.appDelegate = appDelegate
@@ -173,9 +174,20 @@ class MenuBarController: NSObject {
             progressPath.appendArc(withCenter: center,
                                  radius: radius,
                                  startAngle: 90,
-                                 endAngle: 90 - (360 * CGFloat(currentProgress)),
+                                  endAngle: 90 - (360 * CGFloat(currentProgress)),
                                  clockwise: true)
-            NSColor.red.setStroke()
+            let progressColor: NSColor
+            if isDarkMode {
+                progressColor = NSColor(
+                    red: 0.831,
+                    green: 0.686,
+                    blue: 0.215,
+                    alpha: 1.0
+                )
+            } else {
+                progressColor = NSColor.systemBlue
+            }
+            progressColor.setStroke()
             progressPath.stroke()
         }
         
@@ -186,6 +198,11 @@ class MenuBarController: NSObject {
         
         // 更新状态栏图标
         statusItem.button?.image = image
+    }
+    
+    func updateTheme(isDark: Bool) {
+        isDarkMode = isDark
+        drawProgress()
     }
     
     @objc private func handleButtonClick(_ sender: Any?) {
