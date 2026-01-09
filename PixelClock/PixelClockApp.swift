@@ -7,6 +7,31 @@
 
 import SwiftUI
 import AppKit
+import os
+import Foundation
+
+let appLogger = OSLog(subsystem: "com.rockstonegame.PixelClock", category: "AppDelegate")
+
+func logToFile(_ message: String) {
+    let logDir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    let logFile = logDir.appendingPathComponent("pixelclock_debug.log")
+    
+    let timestamp = DateFormatter().string(from: Date())
+    let logLine = "[\(timestamp)] \(message)\n"
+    
+    if let data = logLine.data(using: .utf8) {
+        if FileManager.default.fileExists(atPath: logFile.path) {
+            if let handle = try? FileHandle(forWritingTo: logFile) {
+                handle.seekToEndOfFile()
+                handle.write(data)
+                handle.closeFile()
+            }
+        } else {
+            try? data.write(to: logFile)
+        }
+    }
+    print(message)
+}
 
 @main
 struct PixelClockApp: App {
@@ -39,6 +64,9 @@ class PopoverViewController: NSViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        logToFile("=== PopoverViewController.viewDidLoad ===")
+        logToFile("NSApp.effectiveAppearance: \(NSApp.effectiveAppearance.name.rawValue)")
+        logToFile("view.window?.effectiveAppearance: \(view.window?.effectiveAppearance.name.rawValue ?? "nil")")
         
         let hostingController = NSHostingController(rootView: ContentView()
             .environmentObject(appDelegate!)
@@ -81,26 +109,23 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
 
     private func setupPopover() {
         popover = NSPopover()
-        
+
         guard let popover = popover else { return }
-        
+
         popover.contentSize = NSSize(width: 530, height: 570)
         popover.behavior = .transient
         popover.animates = true
-        
+
+        // Set appearance based on current system theme
+        if NSApp.effectiveAppearance.name == .darkAqua {
+            popover.appearance = NSAppearance(named: .darkAqua)
+        } else {
+            popover.appearance = NSAppearance(named: .aqua)
+        }
+
         let contentViewController = PopoverViewController()
         contentViewController.appDelegate = self
         popover.contentViewController = contentViewController
-        
-        // 监听系统主题切换
-        DistributedNotificationCenter.default().addObserver(
-            forName: NSNotification.Name("AppleInterfaceThemeChangedNotification"),
-            object: nil,
-            queue: .main
-        ) { [weak self] _ in
-            let newAppearance = NSApp.effectiveAppearance.name
-            self?.popover?.appearance = NSAppearance(named: newAppearance)
-        }
     }
     
     func showPopover() {

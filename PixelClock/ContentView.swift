@@ -8,6 +8,31 @@
 import SwiftUI
 import AppKit
 import AVFoundation
+import os
+import Foundation
+
+let logger = OSLog(subsystem: "com.rockstonegame.PixelClock", category: "ThemeDebug")
+
+func debugLog(_ message: String) {
+    let logDir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    let logFile = logDir.appendingPathComponent("pixelclock_debug.log")
+    
+    let timestamp = DateFormatter().string(from: Date())
+    let logLine = "[\(timestamp)] [ContentView] \(message)\n"
+    
+    if let data = logLine.data(using: .utf8) {
+        if FileManager.default.fileExists(atPath: logFile.path) {
+            if let handle = try? FileHandle(forWritingTo: logFile) {
+                handle.seekToEndOfFile()
+                handle.write(data)
+                handle.closeFile()
+            }
+        } else {
+            try? data.write(to: logFile)
+        }
+    }
+    print(message)
+}
 
 struct VisualEffectView: NSViewRepresentable {
     func makeNSView(context: Context) -> NSVisualEffectView {
@@ -43,7 +68,7 @@ extension Color {
             red: Double(r) / 255,
             green: Double(g) / 255,
             blue:  Double(b) / 255,
-            opacity: Double(a) / 255
+            opacity: 1.0
         )
     }
 }
@@ -66,7 +91,7 @@ struct ContentView: View {
     @State private var isDebugDarkMode = false
     @FocusState private var startButtonFocused: Bool
 
-    private let goldColor = Color(hex: "0xD4AF37")
+    private let goldColor = Color(red: 1, green: 215/255, blue: 0)  // Bright gold
 
     private func formatTime(_ seconds: Double) -> String {
         let minutes = Int(seconds) / 60
@@ -75,6 +100,11 @@ struct ContentView: View {
     }
 
     var body: some View {
+        let _ = debugLog("=== ContentView.body called ===")
+        let _ = debugLog("colorScheme: \(colorScheme)")
+        let _ = debugLog("isDebugDarkMode: \(isDebugDarkMode)")
+        let _ = debugLog("Effective theme: \(isDebugDarkMode ? "Dark (Debug)" : (colorScheme == .dark ? "Dark" : "Light"))")
+        
         VStack(spacing: 40) {
             PillTabSwitcher(selectedState: $viewModel.currentState)
 
@@ -88,18 +118,6 @@ struct ContentView: View {
                 .fontDesign(.rounded)
                 .contentTransition(.numericText(countsDown: true))
                 .foregroundColor(colorScheme == .dark ? goldColor : .primary)
-                .shadow(
-                    color: colorScheme == .dark ? goldColor.opacity(0.3) : .clear,
-                    radius: colorScheme == .dark ? 20 : 0,
-                    x: 0,
-                    y: 0
-                )
-                .shadow(
-                    color: colorScheme == .dark ? goldColor.opacity(0.6) : .clear,
-                    radius: colorScheme == .dark ? 5 : 0,
-                    x: 0,
-                    y: 0
-                )
 
             Text("Completed Tasks: \(viewModel.completedTasks)")
                 .font(.system(size: 14))
@@ -109,15 +127,11 @@ struct ContentView: View {
                 Button(action: startPauseTimer) {
                     Text(viewModel.timerRunning ? "Pause" : "Start")
                         .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(colorScheme == .dark ? goldColor : .white)
+                        .foregroundColor(colorScheme == .dark ? goldColor : .primary)
                         .frame(width: 120, height: 50)
                         .background(
                             Capsule()
-                                .fill(colorScheme == .dark ? Color.black : Color.blue)
-                                .overlay(
-                                    Capsule()
-                                        .stroke(colorScheme == .dark ? goldColor : .clear, lineWidth: 2)
-                                )
+                                .fill(Color.blue)
                         )
                 }
                 .buttonStyle(PlainButtonStyle())
@@ -127,15 +141,11 @@ struct ContentView: View {
                 Button(action: stopTimer) {
                     Text("Stop")
                         .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(colorScheme == .dark ? goldColor : .white)
+                        .foregroundColor(colorScheme == .dark ? goldColor : .primary)
                         .frame(width: 120, height: 50)
                         .background(
                             Capsule()
-                                .fill(colorScheme == .dark ? Color.black : Color.red)
-                                .overlay(
-                                    Capsule()
-                                        .stroke(colorScheme == .dark ? goldColor : .clear, lineWidth: 2)
-                                )
+                                .fill(Color.red)
                         )
                 }
                 .buttonStyle(PlainButtonStyle())
@@ -162,13 +172,23 @@ struct ContentView: View {
 
                 Button(action: {
                     isDebugDarkMode.toggle()
+                    print("Debug button clicked! isDebugDarkMode: \(isDebugDarkMode)")
                 }) {
-                    Text("Theme: \(colorScheme == .dark ? "Dark" : "Light") \(isDebugDarkMode ? "(Debug Dark)" : "")")
-                        .font(.system(size: 12))
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 5)
-                        .background(Color.gray.opacity(0.2))
-                        .cornerRadius(5)
+                    VStack(spacing: 2) {
+                        Text("System: \(colorScheme == .dark ? "Dark" : "Light")")
+                            .font(.system(size: 10, weight: .medium))
+                            .foregroundColor(.white)
+                        Text("Debug: \(isDebugDarkMode ? "ON" : "OFF")")
+                            .font(.system(size: 10))
+                            .foregroundColor(.yellow)
+                        Text("Effect: \(isDebugDarkMode ? "Dark (Debug)" : (colorScheme == .dark ? "Dark" : "Light"))")
+                            .font(.system(size: 10, weight: .bold))
+                            .foregroundColor(.white)
+                    }
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 5)
+                    .background(Color.gray.opacity(0.8))
+                    .cornerRadius(5)
                 }
                 .buttonStyle(PlainButtonStyle())
             }
@@ -176,23 +196,18 @@ struct ContentView: View {
         }
         .padding(.horizontal, 40)
         .padding(.vertical, 50)
-        .background(
-            ZStack {
-                if colorScheme == .dark || isDebugDarkMode {
-                    Color.black.opacity(0.85)
-                } else {
-                    Color.blue.opacity(0.05)
-                }
-                VisualEffectView()
-            }
-        )
+        .background(Color.black.opacity(0.85))
         .ignoresSafeArea()
         .onChange(of: colorScheme) { newValue in
+            debugLog("colorScheme changed: \(newValue)")
             if let menuBarController = appDelegate.menuBarController {
                 menuBarController.updateTheme(isDark: newValue == .dark)
             }
         }
         .onAppear {
+            debugLog("ContentView.onAppear - Initial state:")
+            debugLog("  colorScheme: \(colorScheme)")
+            debugLog("  isDebugDarkMode: \(isDebugDarkMode)")
             startButtonFocused = true
             if let menuBarController = appDelegate.menuBarController {
                 menuBarController.updateTheme(isDark: colorScheme == .dark)
