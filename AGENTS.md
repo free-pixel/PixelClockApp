@@ -157,41 +157,7 @@ PixelClock/
 └── scripts/build.sh         # Build script
 ```
 
-## Session Summary (gss)
-
-When the user requests `gss` or similar, save the current session summary to `internal_docs/`:
-
-```bash
-# Save session summary to internal_docs/session-<date>.md
-gss  # or use the Write tool to create: internal_docs/session-YYYYMMDD.md
-```
-
-**Format:**
-```markdown
-# Session Summary - YYYY-MM-DD
-
-## Tasks Completed
-- Task 1
-- Task 2
-
-## Files Changed
-| File | Action |
-|------|--------|
-| path/to/file | modified/created |
-
-## Key Decisions
-- Decision 1
-- Decision 2
-
-## Next Steps
-- Next action 1
-```
-
-**Rules:**
-- Default location: `internal_docs/`
-- Filename format: `session-YYYYMMDD.md` or `session-YYYYMMDD-HHMM.md`
-- All agents must follow this convention
-
+## Git Conventions
 
 ```
 <type>: <subject>
@@ -217,4 +183,3 @@ Branches: `feat/` | `fix/` | `refactor/`
 - [SwiftUI Documentation](https://developer.apple.com/documentation/swiftui/)
 - [Swift Testing Framework](https://developer.apple.com/documentation/testing)
 - [CONTRIBUTING.md](./CONTRIBUTING.md)
-# Test sync
