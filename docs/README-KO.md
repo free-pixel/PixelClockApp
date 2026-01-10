@@ -1,7 +1,7 @@
 
 # PixelClock - Mac용 포모도로 타이머
 
-[English](../README.md) | [简体中文](README-ZH_CN.md) | [繁體中文](README-ZH_HANS.md) | [日本語](README-JA.md) | [🌍 Website](https://free-pixel.github.io)
+[English](../README.md) | [简体中文](README-ZH_CN.md) | [繁體中文](README-ZH_HANS.md) | [日本語](README-JA.md) | 한국어 | [🌍 Website](https://free-pixel.github.io)
 
 **이 프로젝트가 도움이 되었다면 ⭐Star 를 눌러주세요 —— 당신의 지원은 우리에게 매우 중요합니다!**
 
