@@ -78,9 +78,22 @@ When filing an issue, make sure to answer these questions:
 
 ## Documentation
 
-- Keep README.md and README-ZH_CN.md in sync
+- Keep README.md, README-ZH_CN.md and README-ZH_HANS.md in sync
 - Update documentation for any user-facing changes
 - Add comments for complex code sections
+
+### AGENTS.md Sync
+
+AGENTS.md is used by AI agents but kept out of git tracking. When updating:
+
+```bash
+# 1. Modify AGENTS.md in root directory
+# 2. Sync to internal_docs submodule
+./scripts/sync-agents.sh
+# 3. Commit changes
+git add -f docs/ scripts/sync-agents.sh
+git commit -m "docs: update AGENTS.md"
+```
 
 ## Community
 

@@ -1,6 +1,6 @@
 # PixelClock - Mac 版番茄鐘應用
 
-[English](README.md) | [簡體中文](README-ZH_CN.md) | 繁體中文
+[English](../README.md) | [簡體中文](README-ZH_CN.md) | 繁體中文
 
 **如果你覺得這個專案對你有幫助，請點個 ⭐Star。你的支持對我們非常重要！**
 

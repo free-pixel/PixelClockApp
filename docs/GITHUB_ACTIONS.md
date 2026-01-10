@@ -41,13 +41,13 @@
 
 ## 文档
 
-### 1. `.github/README.md`
+### 1. `../.github/README.md`
 GitHub Actions 顶层文档，包含快速开始指南。
 
-### 2. `.github/workflows/README.md`
+### 2. `../.github/workflows/README.md`
 工作流详细文档，说明每个工作流的配置和使用方法。
 
-### 3. `.github/SETUP.md`
+### 3. `../.github/SETUP.md`
 详细的设置指南，包括：
 - 快速开始步骤
 - 工作流说明
