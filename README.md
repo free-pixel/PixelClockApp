@@ -1,7 +1,7 @@
 
 # PixelClock - Pomodoro Timer for Mac
 
-English | [简体中文](docs/README-ZH_CN.md) | [繁體中文](docs/README-ZH_HANS.md) | [🌍 Website](https://free-pixel.github.io)
+English | [简体中文](docs/README-ZH_CN.md) | [繁體中文](docs/README-ZH_HANS.md) | [日本語](docs/README-JA.md) | [한국어](docs/README-KO.md) | [🌍 Website](https://free-pixel.github.io)
 
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](http://makeapullrequest.com)
 ![Last Commit](https://img.shields.io/github/last-commit/free-pixel/PixelClockApp)
