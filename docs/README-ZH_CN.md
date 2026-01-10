@@ -1,7 +1,7 @@
 
 # PixelClock - Mac版番茄钟应用
 
-[English](README.md) | 简体中文 | [繁體中文](README-ZH_HANS.md)
+[English](../README.md) | 简体中文 | [繁體中文](README-ZH_HANS.md)
 
 **如果你喜欢这个项目，请点个 ⭐Star 支持一下 —— 这对我们非常重要！**
 
